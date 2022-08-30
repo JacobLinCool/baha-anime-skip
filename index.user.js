@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         Baha Anime Skip
 // @version      0.1.0
-// @description  
+// @description  Skip OP or other things on Bahamut Anime.
 // @author       JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)
 // @license      MIT
 // @homepage     https://github.com/JacobLinCool/baha-anime-skip#readme
 // @supportURL   https://github.com/JacobLinCool/baha-anime-skip/issues
+// @updateURL    https://raw.githubusercontent.com/JacobLinCool/baha-anime-skip/dist/index.user.js
+// @downloadURL  https://raw.githubusercontent.com/JacobLinCool/baha-anime-skip/dist/index.user.js
 // @namespace    http://tampermonkey.net/
 // @match        https://ani.gamer.com.tw/animeVideo.php?sn=*
 // @icon         https://www.google.com/s2/favicons?domain=gamer.com.tw
