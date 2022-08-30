@@ -1,16 +1,16 @@
-name: Build Data
+name: Build Script
 
 on:
   push:
     branches:
       - main
     paths:
-      - packages/baha-anime-skip-db/data.json
+      - packages/baha-anime-skip/**
   workflow_dispatch:
 
 jobs:
-  build_data:
-    name: Build Data
+  build_script:
+    name: Build Script
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,11 +23,11 @@ jobs:
           run_install: true
 
       - name: Build
-        run: pnpm -r run slice
+        run: pnpm -r run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN  }}
-          publish_dir: "./packages/baha-anime-skip-db/data"
-          publish_branch: "data"
+          publish_dir: "./packages/baha-anime-skip/dist"
+          publish_branch: "dist"
