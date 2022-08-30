@@ -61,7 +61,7 @@ function create_button(): HTMLButtonElement {
 }
 
 async function get_data(sn: string): Promise<Record<string, [number, number]>> {
-    const url = `https://raw.githubusercontent.com/jacoblincool/baha-anime-skip/data/${sn}.json`;
+    const url = `https://jacoblincool.github.io/baha-anime-skip/${sn}.json`;
     const res = await fetch(url);
     const data = await res.json();
     return data;
