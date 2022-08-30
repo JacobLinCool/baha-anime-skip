@@ -36,7 +36,7 @@ importers:
 
   packages/baha-anime-skip:
     specifiers:
-      baha-anime-skip-db: workspace:^0.1.0
+      baha-anime-skip-db: workspace:*
       tsup: ^6.2.3
       tsx: ^3.9.0
       typedoc: ^0.23.11
@@ -51,7 +51,7 @@ importers:
       typescript: 4.8.2
       zod: 3.18.0
 
-  packages/baha-znime-skip-db:
+  packages/baha-anime-skip-db:
     specifiers:
       tsup: ^6.2.3
       tsx: ^3.9.0

@@ -1,0 +1,27 @@
+{
+    "name": "baha-anime-skip",
+    "version": "0.1.0",
+    "description": "",
+    "keywords": [],
+    "author": "JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "module": "lib/index.mjs",
+    "types": "lib/index.d.ts",
+    "files": [
+        "lib"
+    ],
+    "scripts": {
+        "build": "tsup"
+    },
+    "dependencies": {
+        "baha-anime-skip-db": "workspace:*"
+    },
+    "devDependencies": {
+        "tsup": "^6.2.3",
+        "tsx": "^3.9.0",
+        "typedoc": "^0.23.11",
+        "typescript": "^4.8.2",
+        "zod": "^3.18.0"
+    }
+}
