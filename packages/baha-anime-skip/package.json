@@ -5,11 +5,10 @@
     "keywords": [],
     "author": "JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)",
     "license": "MIT",
-    "main": "lib/index.js",
-    "module": "lib/index.mjs",
-    "types": "lib/index.d.ts",
+    "type": "module",
+    "main": "dist/index.js",
     "files": [
-        "lib"
+        "dist"
     ],
     "scripts": {
         "build": "tsup"
