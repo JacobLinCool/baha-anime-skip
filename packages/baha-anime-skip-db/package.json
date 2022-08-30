@@ -1,7 +1,7 @@
 {
     "name": "baha-anime-skip-db",
     "version": "0.1.0",
-    "description": "",
+    "description": "Skip OP or other things on Bahamut Anime.",
     "keywords": [],
     "author": "JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)",
     "license": "MIT",
