@@ -9,6 +9,8 @@ const banner = `// ==UserScript==
 // @license      MIT
 // @homepage     https://github.com/JacobLinCool/baha-anime-skip#readme
 // @supportURL   https://github.com/JacobLinCool/baha-anime-skip/issues
+// @updateURL    https://raw.githubusercontent.com/JacobLinCool/baha-anime-skip/dist/index.user.js
+// @downloadURL  https://raw.githubusercontent.com/JacobLinCool/baha-anime-skip/dist/index.user.js
 // @namespace    http://tampermonkey.net/
 // @match        https://ani.gamer.com.tw/animeVideo.php?sn=*
 // @icon         https://www.google.com/s2/favicons?domain=gamer.com.tw
@@ -26,4 +28,7 @@ export default defineConfig(() => ({
     banner: () => ({
         js: banner,
     }),
+    outExtension: (ctx) => {
+        return { js: ".user.js" };
+    },
 }));

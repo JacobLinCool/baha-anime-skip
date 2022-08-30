@@ -6,7 +6,7 @@
     "author": "JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)",
     "license": "MIT",
     "type": "module",
-    "main": "dist/index.js",
+    "main": "dist/index.user.js",
     "files": [
         "dist"
     ],
