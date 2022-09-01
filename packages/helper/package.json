@@ -1,0 +1,20 @@
+{
+    "private": true,
+    "name": "helper",
+    "version": "0.1.0",
+    "description": "",
+    "keywords": [],
+    "author": "JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)",
+    "license": "MIT",
+    "scripts": {
+        "start": "tsx src/index.ts"
+    },
+    "dependencies": {
+        "commander": "^9.4.0",
+        "lcsb": "^0.1.3"
+    },
+    "devDependencies": {
+        "baha-anime-crawler": "^0.1.1",
+        "tsx": "^3.9.0"
+    }
+}

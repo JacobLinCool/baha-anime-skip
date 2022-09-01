@@ -18,7 +18,8 @@
         "build": "pnpm -r run build",
         "docs": "pnpm -r run docs",
         "format": "prettier --write '**/*.{js,ts,jsx,tsx,json,yml,yaml,md,html}' --ignore-path .gitignore",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "helper": "pnpm -r --filter=helper run start"
     },
     "devDependencies": {
         "@types/jest": "^28.1.8",
