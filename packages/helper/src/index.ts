@@ -10,10 +10,12 @@ program
     .argument("<sn...>", "serial numbers of the target")
     .option("--ref", "use ref instead of serial numbers")
     .option("-p, --pool <pool>", "pool size", Number, 4800)
-    .option("-l, --lower <lower>", "lower bound", Number, 1)
+    .option("-l, --lower <lower>", "lower bound", Number, 20)
     .option("-u, --upper <upper>", "upper bound", Number, 2 * 60)
     .option("-b, --before <seconds>", "before seconds", Number, 10 * 60)
     .option("-t, --tolerance <seconds>", "block tolerance seconds", Number, 0.2)
+    .option("-c, --concurrency <concurrency>", "concurrency", Number, os.cpus().length)
+    .option("-s, --simple", "simple mode")
     .option("-k, --keep", "do not cleanup")
     .action(async (sn: string[], options) => {
         if (sn.length === 0 || (sn.length < 2 && !options.ref)) {
@@ -23,7 +25,7 @@ program
 
         const sn_list = options.ref ? await get_sn(sn[0]) : sn.map((item) => +item);
         sn_list.sort((a, b) => a - b);
-        const limiter = new RateLimiter({ concurrent: 6 });
+        const limiter = new RateLimiter({ concurrent: options.concurrency });
 
         const temp = path.join(os.tmpdir(), "waves-tmp");
 
@@ -46,23 +48,56 @@ program
                     pool: options.pool,
                     lower: options.lower,
                     upper: options.upper,
-                }).filter((b) => b.start < options.before),
+                })
+                    .filter((b) => b.start < options.before)
+                    .map((b) => {
+                        b.duration = +b.duration.toFixed(2);
+                        return b;
+                    }),
             );
 
         for (let i = 0; i < blocks.length; i++) {
             console.log(sn_list[i], blocks[i]);
         }
 
-        const commons = mclsb(blocks);
-
-        const result = sn_list.reduce((dict, sn, idx) => {
-            if (commons.starts[idx] !== -1) {
-                dict[sn] = { OP: [+commons.starts[idx].toFixed(2), +commons.duration.toFixed(2)] };
+        if (options.simple) {
+            const map = new Map<number, number>();
+            for (let i = 0; i < blocks.length; i++) {
+                for (const block of blocks[i]) {
+                    map.set(block.duration, (map.get(block.duration) ?? 0) + 1);
+                }
             }
-            return dict;
-        }, {} as Record<string, Record<string, [number, number]>>);
 
-        console.log(JSON.stringify(result, null, 4));
+            const sorted = [...map.entries()].sort((a, b) => b[1] - a[1]);
+            const [duration] = sorted[0];
+
+            const result = sn_list.reduce((dict, sn, idx) => {
+                const block = blocks[idx].find(
+                    (b) => Math.abs(b.duration - duration) <= options.tolerance,
+                );
+                if (block) {
+                    dict[sn] = {
+                        OP: [+block.start.toFixed(2), +duration.toFixed(2)],
+                    };
+                }
+                return dict;
+            }, {} as Record<string, Record<string, [number, number]>>);
+
+            console.log(JSON.stringify(result, null, 4));
+        } else {
+            const commons = mclsb(blocks);
+
+            const result = sn_list.reduce((dict, sn, idx) => {
+                if (commons.starts[idx] !== -1) {
+                    dict[sn] = {
+                        OP: [+commons.starts[idx].toFixed(2), +commons.duration.toFixed(2)],
+                    };
+                }
+                return dict;
+            }, {} as Record<string, Record<string, [number, number]>>);
+
+            console.log(JSON.stringify(result, null, 4));
+        }
 
         if (!options.keep) {
             fs.rmSync(temp, { recursive: true });
