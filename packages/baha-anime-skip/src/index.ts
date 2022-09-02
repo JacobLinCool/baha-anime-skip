@@ -51,20 +51,17 @@
 
                     button.onclick = () => {
                         target.currentTime = data[i].end;
-                        button.style.opacity = "0";
                         button.onclick = none;
                     };
                     has_event = true;
 
                     if (data[i].chapter === "NEVT") {
-                        button.innerHTML = "歡迎貢獻 OP 資訊";
+                        button.innerHTML = "貢獻 OP 資訊";
                         button.onclick = () => {
                             window.open(
                                 "https://github.com/JacobLinCool/baha-anime-skip#readme",
                                 "_blank",
                             );
-                            button.style.opacity = "0";
-                            button.onclick = none;
                         };
                     }
 
