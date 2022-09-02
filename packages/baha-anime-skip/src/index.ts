@@ -31,10 +31,15 @@
         observer.observe(target, config);
 
         const data: { chapter: string; start: number; end: number }[] = Object.entries(
-            await get_data(sn),
+            await get_data(sn).catch(() => ({})),
         ).map(([chapter, [start, duration]]) => ({ chapter, start, end: start + duration }));
         console.log("Chapters", JSON.stringify(data, null, 4));
 
+        if (data.length === 0) {
+            data.push({ chapter: "NEVT", start: 0, end: 3 });
+        }
+
+        const none = () => console.log("Skip button clicked");
         target.addEventListener("timeupdate", () => {
             const time = target.currentTime;
 
@@ -47,17 +52,29 @@
                     button.onclick = () => {
                         target.currentTime = data[i].end;
                         button.style.opacity = "0";
-                        button.onclick = () => {
-                            console.log("Skip button clicked");
-                        };
+                        button.onclick = none;
                     };
                     has_event = true;
+
+                    if (data[i].chapter === "NEVT") {
+                        button.innerHTML = "歡迎貢獻 OP 資訊";
+                        button.onclick = () => {
+                            window.open(
+                                "https://github.com/JacobLinCool/baha-anime-skip#readme",
+                                "_blank",
+                            );
+                            button.style.opacity = "0";
+                            button.onclick = none;
+                        };
+                    }
+
                     break;
                 }
             }
 
             if (!has_event) {
                 button.style.opacity = "0";
+                button.onclick = none;
             }
         });
     }
@@ -83,6 +100,7 @@
         button.style.alignItems = "center";
         button.style.cursor = "pointer";
         button.style.pointerEvents = "auto";
+        button.style.overflow = "hidden";
 
         button.innerHTML = "Skip";
 
