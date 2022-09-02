@@ -2,108 +2,118 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import { exec } from "node:child_process";
-import { program } from "commander";
 import { DetailCrawler, RateLimiter, AnimeDetailInfo } from "baha-anime-crawler";
 import { partition, mclsb } from "lcsb";
 
-program
-    .argument("<sn...>", "serial numbers of the target")
-    .option("--ref", "use ref instead of serial numbers")
-    .option("-p, --pool <pool>", "pool size", Number, 4800)
-    .option("-l, --lower <lower>", "lower bound", Number, 20)
-    .option("-u, --upper <upper>", "upper bound", Number, 2 * 60)
-    .option("-b, --before <seconds>", "before seconds", Number, 10 * 60)
-    .option("-t, --tolerance <seconds>", "block tolerance seconds", Number, 0.2)
-    .option("-c, --concurrency <concurrency>", "concurrency", Number, os.cpus().length)
-    .option("-s, --simple", "simple mode")
-    .option("-k, --keep", "do not cleanup")
-    .action(async (sn: string[], options) => {
-        if (sn.length === 0 || (sn.length < 2 && !options.ref)) {
-            console.log("Too few arguments");
-            process.exit(1);
-        }
+export async function helper(
+    sn: string[],
+    {
+        pool = 4800,
+        lower = 60,
+        upper = 100,
+        before = 8 * 60,
+        tolerance = 0.4,
+        concurrency = os.cpus().length,
+        simple = false,
+        keep = false,
+        ref = false,
+    }: {
+        ref?: boolean;
+        pool?: number;
+        lower?: number;
+        upper?: number;
+        before?: number;
+        tolerance?: number;
+        concurrency?: number;
+        simple?: boolean;
+        keep?: boolean;
+    } = {},
+): Promise<Record<string, Record<string, [number, number]>>> {
+    if (sn.length === 0 || (sn.length < 2 && !ref)) {
+        console.log("Too few arguments");
+        process.exit(1);
+    }
 
-        const sn_list = options.ref ? await get_sn(sn[0]) : sn.map((item) => +item);
-        sn_list.sort((a, b) => a - b);
-        const limiter = new RateLimiter({ concurrent: options.concurrency });
+    const sn_list = ref ? await get_sn(sn[0]) : sn.map((item) => +item);
+    sn_list.sort((a, b) => a - b);
+    const limiter = new RateLimiter({ concurrent: concurrency });
 
-        const temp = path.join(os.tmpdir(), "waves-tmp");
+    const temp = path.join(os.tmpdir(), "waves-tmp");
 
-        await Promise.all(
-            sn_list.map(async (sn) => {
-                await limiter.lock();
-                await download(sn, temp, options.keep);
-                limiter.unlock();
-            }),
+    await Promise.all(
+        sn_list.map(async (sn) => {
+            await limiter.lock();
+            await download(sn, temp, keep);
+            limiter.unlock();
+        }),
+    );
+
+    const waves = fs
+        .readdirSync(temp)
+        .filter((file) => file.endsWith(".wav") && sn_list.includes(+file.split(".")[0]))
+        .sort((a, b) => +a.split(".")[0] - +b.split(".")[0]);
+    const blocks = waves
+        .map((file) => fs.readFileSync(path.join(temp, file)))
+        .map((buffer) =>
+            partition(buffer, {
+                pool: pool,
+                lower: lower,
+                upper: upper,
+            })
+                .filter((b) => b.start < before)
+                .map((b) => {
+                    b.duration = +b.duration.toFixed(2);
+                    return b;
+                }),
         );
 
-        const waves = fs
-            .readdirSync(temp)
-            .filter((file) => file.endsWith(".wav") && sn_list.includes(+file.split(".")[0]))
-            .sort((a, b) => +a.split(".")[0] - +b.split(".")[0]);
-        const blocks = waves
-            .map((file) => fs.readFileSync(path.join(temp, file)))
-            .map((buffer) =>
-                partition(buffer, {
-                    pool: options.pool,
-                    lower: options.lower,
-                    upper: options.upper,
-                })
-                    .filter((b) => b.start < options.before)
-                    .map((b) => {
-                        b.duration = +b.duration.toFixed(2);
-                        return b;
-                    }),
-            );
+    for (let i = 0; i < blocks.length; i++) {
+        console.log(sn_list[i], blocks[i]);
+    }
 
+    if (simple) {
+        const map = new Map<number, number>();
         for (let i = 0; i < blocks.length; i++) {
-            console.log(sn_list[i], blocks[i]);
-        }
-
-        if (options.simple) {
-            const map = new Map<number, number>();
-            for (let i = 0; i < blocks.length; i++) {
-                for (const block of blocks[i]) {
-                    map.set(block.duration, (map.get(block.duration) ?? 0) + 1);
-                }
+            for (const block of blocks[i]) {
+                map.set(block.duration, (map.get(block.duration) ?? 0) + 1);
             }
-
-            const sorted = [...map.entries()].sort((a, b) => b[1] - a[1]);
-            const [duration] = sorted[0];
-
-            const result = sn_list.reduce((dict, sn, idx) => {
-                const block = blocks[idx].find(
-                    (b) => Math.abs(b.duration - duration) <= options.tolerance,
-                );
-                if (block) {
-                    dict[sn] = {
-                        OP: [+block.start.toFixed(2), +duration.toFixed(2)],
-                    };
-                }
-                return dict;
-            }, {} as Record<string, Record<string, [number, number]>>);
-
-            console.log(JSON.stringify(result, null, 4));
-        } else {
-            const commons = mclsb(blocks);
-
-            const result = sn_list.reduce((dict, sn, idx) => {
-                if (commons.starts[idx] !== -1) {
-                    dict[sn] = {
-                        OP: [+commons.starts[idx].toFixed(2), +commons.duration.toFixed(2)],
-                    };
-                }
-                return dict;
-            }, {} as Record<string, Record<string, [number, number]>>);
-
-            console.log(JSON.stringify(result, null, 4));
         }
 
-        if (!options.keep) {
+        const sorted = [...map.entries()].sort((a, b) => b[1] - a[1]);
+        const [duration] = sorted[0];
+
+        const result = sn_list.reduce((dict, sn, idx) => {
+            const block = blocks[idx].find((b) => Math.abs(b.duration - duration) <= tolerance);
+            if (block) {
+                dict[sn] = {
+                    OP: [+block.start.toFixed(2), +duration.toFixed(2)],
+                };
+            }
+            return dict;
+        }, {} as Record<string, Record<string, [number, number]>>);
+
+        if (!keep) {
             fs.rmSync(temp, { recursive: true });
         }
-    })
-    .parse();
+        return result;
+    } else {
+        const commons = mclsb(blocks);
+
+        const result = sn_list.reduce((dict, sn, idx) => {
+            if (commons.starts[idx] !== -1) {
+                dict[sn] = {
+                    OP: [+commons.starts[idx].toFixed(2), +commons.duration.toFixed(2)],
+                };
+            }
+            return dict;
+        }, {} as Record<string, Record<string, [number, number]>>);
+
+        if (!keep) {
+            fs.rmSync(temp, { recursive: true });
+        }
+        return result;
+    }
+}
 
 async function get_sn(ref: string) {
     const crawler = new DetailCrawler([{ ref: +ref } as AnimeDetailInfo]);
