@@ -59,19 +59,16 @@
           button.innerHTML = `Skip ${data[i].chapter}`;
           button.onclick = () => {
             target.currentTime = data[i].end;
-            button.style.opacity = "0";
             button.onclick = none;
           };
           has_event = true;
           if (data[i].chapter === "NEVT") {
-            button.innerHTML = "\u6B61\u8FCE\u8CA2\u737B OP \u8CC7\u8A0A";
+            button.innerHTML = "\u8CA2\u737B OP \u8CC7\u8A0A";
             button.onclick = () => {
               window.open(
                 "https://github.com/JacobLinCool/baha-anime-skip#readme",
                 "_blank"
               );
-              button.style.opacity = "0";
-              button.onclick = none;
             };
           }
           break;
