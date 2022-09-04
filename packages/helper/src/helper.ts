@@ -32,13 +32,17 @@ program
             }
         } else {
             for (const key of sn) {
-                const result = await helper([key], options);
-                console.log(JSON.stringify(result, null, 4));
+                try {
+                    const result = await helper([key], options);
+                    console.log(JSON.stringify(result, null, 4));
 
-                if (options.write) {
-                    for (const [key, value] of Object.entries(result)) {
-                        data[key] = value;
+                    if (options.write) {
+                        for (const [key, value] of Object.entries(result)) {
+                            data[key] = value;
+                        }
                     }
+                } catch (err) {
+                    console.error(err);
                 }
             }
         }

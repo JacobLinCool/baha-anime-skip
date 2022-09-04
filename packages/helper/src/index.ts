@@ -48,18 +48,12 @@ export async function helper(
         }),
     );
 
-    const waves = fs
-        .readdirSync(temp)
-        .filter((file) => file.endsWith(".wav") && sn_list.includes(+file.split(".")[0]))
-        .sort((a, b) => +a.split(".")[0] - +b.split(".")[0]);
+    const availables = sn_list.filter((sn) => fs.existsSync(path.join(temp, `${sn}.wav`)));
+    const waves = availables.sort((a, b) => a - b).map((sn) => `${sn}.wav`);
     const blocks = waves
         .map((file) => fs.readFileSync(path.join(temp, file)))
         .map((buffer) =>
-            partition(buffer, {
-                pool: pool,
-                lower: lower,
-                upper: upper,
-            })
+            partition(buffer, { pool, lower, upper })
                 .filter((b) => b.start < before)
                 .map((b) => {
                     b.duration = +b.duration.toFixed(2);
