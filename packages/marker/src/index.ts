@@ -39,8 +39,11 @@ export async function marker(
     await Promise.all(
         sn_list.map(async (sn) => {
             await limiter.lock();
-            await download(sn, temp, keep);
-            limiter.unlock();
+            try {
+                await download(sn, temp, keep);
+            } finally {
+                limiter.unlock();
+            }
         }),
     );
 
@@ -58,10 +61,10 @@ export async function marker(
         );
 
     for (let i = 0; i < blocks.length; i++) {
-        console.log(sn_list[i], blocks[i]);
+        console.log(availables[i], blocks[i]);
     }
 
-    const result = sn_list.reduce((dict, sn, idx) => {
+    const result = availables.reduce((dict, sn, idx) => {
         const block = blocks[idx].find(
             (b) => b.start < before && b.duration >= lower && b.duration <= upper,
         );
@@ -108,10 +111,12 @@ async function download(sn: number, dir: string, keep: boolean) {
         });
 
         const files = fs.readdirSync(tmp);
-        fs.renameSync(path.join(tmp, files[0]), mp4);
+        if (files.length > 0) {
+            fs.renameSync(path.join(tmp, files[0]), mp4);
+        }
     }
 
-    if (!fs.existsSync(wav)) {
+    if (!fs.existsSync(wav) && fs.existsSync(mp4)) {
         const ffmpeg_cmd = `ffmpeg -loglevel warning -i ${mp4} -acodec pcm_s16le -ac 1 ${wav}`;
         const ffmpeg_process = exec(ffmpeg_cmd);
         await new Promise((resolve) => {
