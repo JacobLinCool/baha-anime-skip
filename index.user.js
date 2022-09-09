@@ -17,6 +17,7 @@
 
 // src/index.ts
 (async () => {
+  const endpoint = localStorage.getItem("anime-skip-endpoint") || "https://jacoblincool.github.io/baha-anime-skip/";
   document.body.addEventListener("click", attach, { once: true });
   async function attach() {
     const target = document.querySelector("video");
@@ -105,7 +106,7 @@
     return button;
   }
   async function get_data(sn) {
-    const url = `https://jacoblincool.github.io/baha-anime-skip/${sn}.json`;
+    const url = `${endpoint}${sn}.json`;
     const res = await fetch(url);
     const data = await res.json();
     return data;
