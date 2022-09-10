@@ -7,7 +7,8 @@
     "author": "JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)",
     "license": "MIT",
     "scripts": {
-        "start": "tsx src/marker.ts"
+        "start": "tsx src/marker.ts",
+        "recent": "tsx src/recent.ts"
     },
     "dependencies": {
         "commander": "^9.4.0",

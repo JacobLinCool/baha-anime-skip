@@ -4,11 +4,16 @@ import { marker } from ".";
 
 const INDEX = "https://api.gamer.com.tw/mobile_app/anime/v3/index.php";
 const FILE = "../baha-anime-skip-db/data.json";
+const CACHE = "./.cache";
+if (!fs.existsSync(CACHE)) {
+    fs.writeFileSync(CACHE, "[]");
+}
 
 const original = JSON.parse(fs.readFileSync(FILE, "utf-8")) as Record<
     string,
     Record<string, [number, number]>
 >;
+const cache = JSON.parse(fs.readFileSync(CACHE, "utf-8")) as string[];
 
 main();
 
@@ -23,11 +28,15 @@ async function main() {
             })),
         );
 
-    const pools = [1200, 2400, 4800, 9600];
+    const alive_cache = cache.filter((sn) => items.some((item) => item.sn === sn));
+
+    const pools = [1200, 2400, 4800, 9600, 19200];
     for (const pool of pools) {
         console.log(`Pool: ${pool}`);
 
-        items = items.filter((item) => !item.ignore && !original[item.sn]);
+        items = items.filter(
+            (item) => !item.ignore && !original[item.sn] && !alive_cache.includes(item.sn),
+        );
         console.log(items);
 
         if (items.length === 0) {
@@ -43,4 +52,9 @@ async function main() {
         Object.assign(original, results);
         fs.writeFileSync(FILE, JSON.stringify(original, null, 4));
     }
+
+    items = items.filter(
+        (item) => !item.ignore && !original[item.sn] && !alive_cache.includes(item.sn),
+    );
+    fs.writeFileSync(CACHE, JSON.stringify([...alive_cache, ...items.map((item) => item.sn)]));
 }
