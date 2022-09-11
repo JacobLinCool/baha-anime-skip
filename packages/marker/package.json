@@ -11,10 +11,12 @@
         "recent": "tsx src/recent.ts"
     },
     "dependencies": {
+        "baha-anime-crawler": "^0.1.1",
         "commander": "^9.4.0",
         "file-mapping": "^0.2.1",
         "lcsb": "^0.1.3",
-        "node-fetch": "^2.6.7"
+        "node-fetch": "^2.6.7",
+        "ora": "^5.4.1"
     },
     "devDependencies": {
         "@types/node-fetch": "^2.6.2",
