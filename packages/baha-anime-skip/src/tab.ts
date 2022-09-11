@@ -4,14 +4,17 @@ export function add_tab(): void {
 
     const CONTENT_ID = "baha-anime-skip-content";
 
-    const tab = `<div id="cm-settings" class="ani-tabs__item">
+    const tab = `
+        <div id="cm-settings" class="ani-tabs__item">
             <a class="ani-tabs-link" href="#${CONTENT_ID}">
                 Skip
             </a>
         </div>
-    )`;
+    `;
 
-    tabs.innerHTML += tab;
+    const tab_elm = document.createElement("div");
+    tab_elm.innerHTML = tab;
+    tabs.appendChild(tab_elm);
 
     document.querySelector(`a[href="#${CONTENT_ID}"]`)?.addEventListener("click", (e) => {
         document.querySelector(".ani-tabs-link.is-active")?.classList.remove("is-active");
@@ -27,134 +30,39 @@ export function add_tab(): void {
         e.preventDefault();
     });
 
+    const issue_title = `[資料錯誤或遺失] ${
+        document.title.match(/(.+?\[.+?\])/)?.[1]
+    } (${new URLSearchParams(location.search).get("sn")})`;
+    const issue_body = `[動畫瘋連結](${location.href})\n\n# 問題描述\n<!-- 請將問題描述寫在此行之下 -->\n\n# 補充資料\n<!-- 如有補充資料，請補充於此行之下 -->\n`;
+
     const content = `
         <div class="ani-tab-content__item" id="${CONTENT_ID}" style="display: none">
             <div class="ani-setting-section">
-                <h4 class="ani-setting-title">山脈設定</h4>
+                <h4 class="ani-setting-title">Skip</h4>
                 <div class="ani-setting-item ani-flex">
                     <div class="ani-setting-label">
-                        <span class="ani-setting-label__mian">持續顯示</span>
+                        <span class="ani-setting-label__mian">通報資料錯誤或遺失</span>
                     </div>
                     <div class="ani-setting-value ani-set-flex-right">
-                        <div class="ani-checkbox">
-                            <label class="ani-checkbox__label">
-                                <input
-                                    id="cm-always"
-                                    type="checkbox"
-                                    name="ani-checkbox"
-                                    checked={cfg.always}
-                                    onChange={(e) => {
-                                        window.cm.always = e.target.checked;
-                                    }}
-                                ></input>
-                                <div class="ani-checkbox__button"></div>
-                            </label>
+                        <div>
+                            <a href="https://github.com/JacobLinCool/baha-anime-skip/issues/new?title=${encodeURIComponent(
+                                issue_title,
+                            )}&body=${encodeURIComponent(
+        issue_body,
+    )}" target="_blank" style="color: #54c3e0">GitHub Issues</a>
                         </div>
                     </div>
                 </div>
                 <div class="ani-setting-item ani-flex">
-                    <div class="ani-setting-label">
-                        <span class="ani-setting-label__mian">彩色顯示</span>
-                    </div>
-                    <div class="ani-setting-value ani-set-flex-right">
-                        <div class="ani-checkbox">
-                            <label class="ani-checkbox__label">
-                                <input
-                                    id="cm-colorful"
-                                    type="checkbox"
-                                    name="ani-checkbox"
-                                    checked={cfg.colorful}
-                                    onChange={(e) => {
-                                        window.cm.colorful = e.target.checked;
-                                    }}
-                                ></input>
-                                <div class="ani-checkbox__button"></div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="ani-setting-item ani-flex">
-                    <div class="ani-setting-label">
-                        <span class="ani-setting-label__mian">不透明度</span>
-                        <span class="ani-setting-label__sub" id="cm-opacity-label">
-                            {cfg.opacity * 100}%
-                        </span>
-                    </div>
-                    <div class="ani-setting-value ani-set-flex-right">
-                        <div class="ani-range" id="cm-opacity-range">
-                            <input
-                                type="range"
-                                id="cm-opacity"
-                                max="100"
-                                min="10"
-                                step="10"
-                                value={cfg.opacity * 100}
-                                onChange={(e) => {
-                                    window.cm.opacity = parseInt(e.target.value) / 100;
-                                    document.querySelector("#cm-opacity-label").innerText =
-                                        e.target.value + "%";
-                                }}
-                            ></input>
-                        </div>
-                    </div>
-                </div>
-                <div class="ani-setting-item ani-flex">
-                    <div class="ani-setting-label">
-                        <span class="ani-setting-label__mian">熱度閥值</span>
-                        <span class="ani-setting-label__sub" id="cm-threshold-label">
-                            {cfg.threshold}
-                        </span>
-                    </div>
-                    <div class="ani-setting-value ani-set-flex-right">
-                        <div class="ani-range" id="cm-threshold-input">
-                            <input
-                                type="number"
-                                id="cm-threshold"
-                                max="1000"
-                                min="0"
-                                step="10"
-                                value={cfg.threshold}
-                                onChange={(e) => {
-                                    window.cm.threshold = parseInt(e.target.value);
-                                    document.querySelector("#cm-threshold-label").innerText =
-                                        e.target.value;
-                                }}
-                            ></input>
-                        </div>
-                    </div>
-                </div>
-                <div class="ani-setting-item ani-flex">
-                    <div class="ani-setting-label">
-                        <span class="ani-setting-label__mian">切片大小</span>
-                        <span class="ani-setting-label__sub" id="cm-segments-label">
-                            {cfg.segments}
-                        </span>
-                    </div>
-                    <div class="ani-setting-value ani-set-flex-right">
-                        <div class="ani-range" id="cm-segments-input">
-                            <input
-                                type="number"
-                                id="cm-segments"
-                                max="1000"
-                                min="0"
-                                step="10"
-                                value={cfg.segments}
-                                onChange={(e) => {
-                                    window.cm.segments = parseInt(e.target.value);
-                                    document.querySelector("#cm-segments-label").innerText =
-                                        e.target.value;
-                                }}
-                            ></input>
-                        </div>
+                    <div style="width: 100%">
+                        <textarea id="baha-anime-skip-debug-console" readonly style="width: 100%; height: 120px"></textarea>
                     </div>
                 </div>
             </div>
-            <style>
-                #${CONTENT_ID} input[type="number"] {"{"}
-                border: none; color: #54c3e0; font-size: 2rem; text-align: right; {"}"}
-            </style>
         </div>
     `;
 
-    contents.innerHTML += content;
+    const content_elm = document.createElement("div");
+    content_elm.innerHTML = content;
+    contents.appendChild(content_elm);
 }

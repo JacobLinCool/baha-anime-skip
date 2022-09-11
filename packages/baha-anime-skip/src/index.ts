@@ -1,11 +1,17 @@
+import { add_tab } from "./tab";
+
 (async () => {
     const endpoint =
         localStorage.getItem("anime-skip-endpoint") ||
         "https://jacoblincool.github.io/baha-anime-skip/";
 
-    document.body.addEventListener("click", attach, { once: true });
+    window.addEventListener("load", () => attach().catch(debug), {
+        once: true,
+    });
 
     async function attach() {
+        add_tab();
+
         const target = document.querySelector("video");
         if (!target) {
             throw new Error("Cannot find video element");
@@ -38,12 +44,13 @@
             await get_data(sn).catch(() => ({})),
         ).map(([chapter, [start, duration]]) => ({ chapter, start, end: start + duration }));
         console.log("Chapters", JSON.stringify(data, null, 4));
+        debug(JSON.stringify(data, null, 4));
 
         if (data.length === 0) {
             data.push({ chapter: "NEVT", start: 0, end: 3 });
         }
 
-        const none = () => console.log("Skip button clicked");
+        const none = () => debug("Skip button clicked");
         target.addEventListener("timeupdate", () => {
             const time = target.currentTime;
 
@@ -56,6 +63,7 @@
                     button.onclick = () => {
                         target.currentTime = data[i].end;
                         button.onclick = none;
+                        debug(`Skip ${data[i].chapter} clicked, go to ${data[i].end}`);
                     };
                     has_event = true;
 
@@ -113,5 +121,12 @@
         const res = await fetch(url);
         const data = await res.json();
         return data;
+    }
+
+    function debug(content: string) {
+        const elm = document.querySelector<HTMLTextAreaElement>("#baha-anime-skip-debug-console");
+        if (elm) {
+            elm.value += content.toString() + "\n";
+        }
     }
 })();
