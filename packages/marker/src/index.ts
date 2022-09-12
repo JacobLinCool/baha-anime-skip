@@ -4,6 +4,27 @@ import os from "node:os";
 import { exec } from "node:child_process";
 import { DetailCrawler, RateLimiter, AnimeDetailInfo } from "baha-anime-crawler";
 import { partition } from "lcsb";
+import { MultiTerm, Term } from "multi-term";
+import update from "log-update";
+
+export const multi_term = new MultiTerm(3, process.stdout.columns - 2);
+process.stdout.on("resize", () => {
+    multi_term.width = process.stdout.columns - 2;
+});
+
+let lazy_update: null | NodeJS.Timeout = null;
+multi_term.on("stdout", () => {
+    if (lazy_update) {
+        return;
+    }
+
+    lazy_update = setTimeout(() => {
+        lazy_update = null;
+        update(multi_term.mixed);
+    }, 500);
+});
+export const main_term = new Term("Main");
+multi_term.add(main_term);
 
 export async function marker(
     sn: string[],
@@ -61,7 +82,7 @@ export async function marker(
         );
 
     for (let i = 0; i < blocks.length; i++) {
-        console.log(availables[i], blocks[i]);
+        main_term.stdout.write(`${availables[i]} ${JSON.stringify(blocks[i])}\n`);
     }
 
     const result = availables.reduce((dict, sn, idx) => {
@@ -104,10 +125,17 @@ async function download(sn: number, dir: string, keep: boolean) {
     if (!fs.existsSync(mp4)) {
         const dl_cmd = `docker run --rm -v ${tmp}:/app/bangumi jacoblincool/anigamerplus -s ${sn} -r 360 -n`;
         const dl_process = exec(dl_cmd);
+
+        const term = new Term(`Downloading ${sn}`);
+        multi_term.add(term);
+
         await new Promise((resolve) => {
-            dl_process.on("close", resolve);
-            dl_process.stdout?.pipe(process.stdout);
-            dl_process.stderr?.pipe(process.stderr);
+            dl_process.on("exit", () => {
+                multi_term.remove(term);
+                resolve(null);
+            });
+            dl_process.stdout?.pipe(term.stdout);
+            dl_process.stderr?.pipe(term.stderr);
         });
 
         const files = fs.readdirSync(tmp);
@@ -117,12 +145,19 @@ async function download(sn: number, dir: string, keep: boolean) {
     }
 
     if (!fs.existsSync(wav) && fs.existsSync(mp4)) {
-        const ffmpeg_cmd = `ffmpeg -loglevel warning -i ${mp4} -acodec pcm_s16le -ac 1 ${wav}`;
+        const ffmpeg_cmd = `ffmpeg -i ${mp4} -acodec pcm_s16le -ac 1 ${wav}`;
         const ffmpeg_process = exec(ffmpeg_cmd);
+
+        const term = new Term(`Converting ${sn}`);
+        multi_term.add(term);
+
         await new Promise((resolve) => {
-            ffmpeg_process.on("close", resolve);
-            ffmpeg_process.stdout?.pipe(process.stdout);
-            ffmpeg_process.stderr?.pipe(process.stderr);
+            ffmpeg_process.on("exit", () => {
+                multi_term.remove(term);
+                resolve(null);
+            });
+            ffmpeg_process.stdout?.pipe(term.stdout);
+            ffmpeg_process.stderr?.pipe(term.stderr);
         });
     }
 

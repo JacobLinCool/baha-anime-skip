@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import ora from "ora";
 import { ListCrawler, DetailCrawler, RateLimiter } from "baha-anime-crawler";
-import { marker } from ".";
+import { main_term, marker } from ".";
 
 const FILE = "../baha-anime-skip-db/data.json";
 const CACHE = "ignore.cache";
@@ -33,7 +33,7 @@ async function main() {
         tasks.push(
             (async () => {
                 await limiter.lock();
-                console.log(item.sn);
+                main_term.stdout.write(`${item.sn}\n`);
 
                 try {
                     for (const pool of pools) {
@@ -52,7 +52,7 @@ async function main() {
                             continue;
                         }
 
-                        console.log(item.sn, JSON.stringify(results));
+                        main_term.stdout.write(`${item.sn} ${JSON.stringify(results)}\n`);
 
                         Object.assign(original, results);
 
