@@ -6,7 +6,7 @@ Skip OP or other things on Bahamut Anime.
 
 Database is stored in [`packages/baha-anime-skip-db/data.json`](packages/baha-anime-skip-db/data.json).
 
-Currently, the database includes OP data of 2000+ episodes. Most of them are automatically detected by programs based on some hypotheses, source code is available in [`helper`](packages/helper) and [`marker`](packages/marker).
+Currently, the database includes OP timestamps of **4000+** episodes. Most of them are automatically detected by programs based on some hypotheses, source code is available in [`helper`](packages/helper) and [`marker`](packages/marker).
 
 **Any PRs or Issues are welcome.**
 
@@ -25,3 +25,11 @@ The button will show up if there is a event record for the current episode and t
 A panel with report link and debug info is also attached. If you click the link, a pre-filled issue will be opened in this repo.
 
 ![Panel](./images/panel.png)
+
+## Sponsors
+
+There are no sponsors yet.
+
+If you want to sponsor this project, you can send a Bahamut Anime Redeem Code to my email: [`hi@jacoblin.cool`](mailto:hi@jacoblin.cool?subject=%5BSponsor%5D%20Bahamut%20Anime%20Redeem%20Code&body=Code%3A%20......%0D%0A%0D%0AAnything%20you%20want%20to%20tell%20me:%20%0D%0A). And if you want, I will put your name here.
+
+A premium account is useful because it can save my time to wait for the AD when I am testing the program.
