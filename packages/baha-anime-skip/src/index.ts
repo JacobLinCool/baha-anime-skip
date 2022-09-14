@@ -1,4 +1,5 @@
 import { add_tab } from "./tab";
+import { wait } from "./utils";
 
 (async () => {
     const endpoint =
@@ -12,7 +13,7 @@ import { add_tab } from "./tab";
     async function attach() {
         add_tab();
 
-        const target = document.querySelector("video");
+        const target = await wait("video");
         if (!target) {
             throw new Error("Cannot find video element");
         }
