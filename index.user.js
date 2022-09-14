@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Baha Anime Skip
-// @version      0.1.3
+// @version      0.1.4
 // @description  Skip OP or other things on Bahamut Anime.
 // @author       JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)
 // @license      MIT
@@ -84,6 +84,25 @@ function add_tab() {
   contents.appendChild(content_elm);
 }
 
+// src/utils.ts
+function wait(selector, parent = document.body) {
+  return new Promise((resolve) => {
+    const elm = document.querySelector(selector);
+    if (elm) {
+      resolve(elm);
+      return;
+    }
+    const observer = new MutationObserver(() => {
+      const elm2 = document.querySelector(selector);
+      if (elm2) {
+        observer.disconnect();
+        resolve(elm2);
+      }
+    });
+    observer.observe(parent, { childList: true, subtree: true });
+  });
+}
+
 // src/index.ts
 (async () => {
   const endpoint = localStorage.getItem("anime-skip-endpoint") || "https://jacoblincool.github.io/baha-anime-skip/";
@@ -92,7 +111,7 @@ function add_tab() {
   });
   async function attach() {
     add_tab();
-    const target = document.querySelector("video");
+    const target = await wait("video");
     if (!target) {
       throw new Error("Cannot find video element");
     }
