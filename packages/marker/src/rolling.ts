@@ -64,7 +64,7 @@ async function main() {
                         break;
                     }
                 } catch (err) {
-                    console.error(err);
+                    main_term.stderr.write(`${(err as Error).toString()}\n`);
                 }
 
                 limiter.unlock();

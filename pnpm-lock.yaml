@@ -90,7 +90,7 @@ importers:
       file-mapping: ^0.2.1
       lcsb: ^0.1.3
       log-update: ^4.0.0
-      multi-term: ^0.1.1
+      multi-term: ^0.1.2
       node-fetch: ^2.6.7
       ora: ^5.4.1
       tsx: ^3.9.0
@@ -100,7 +100,7 @@ importers:
       file-mapping: 0.2.1
       lcsb: 0.1.3
       log-update: 4.0.0
-      multi-term: 0.1.1
+      multi-term: 0.1.2
       node-fetch: 2.6.7
       ora: 5.4.1
     devDependencies:
@@ -1429,6 +1429,14 @@ packages:
   /cli-spinners/2.7.0:
     resolution: {integrity: sha512-qu3pN8Y3qHNgE2AFweciB1IfMnmZ/fsNTEE+NOFjmGB2F/7rLhnhzppvpCnN4FovtP26k8lHyy9ptEbNwWFLzw==}
     engines: {node: '>=6'}
+    dev: false
+
+  /cli-truncate/2.1.0:
+    resolution: {integrity: sha512-n8fOixwDD6b/ObinzTrp1ZKFzbgvKZvuz/TvejnLn1aQfC6r52XEx85FmuC+3HI+JM7coBRXUvNqEU2PHVrHpg==}
+    engines: {node: '>=8'}
+    dependencies:
+      slice-ansi: 3.0.0
+      string-width: 4.2.3
     dev: false
 
   /cliui/7.0.4:
@@ -3079,11 +3087,12 @@ packages:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: true
 
-  /multi-term/0.1.1:
-    resolution: {integrity: sha512-6MMojmLXsu555ls3TheX31aJ1c9npR1G0Vg/6CcRfDwI6a28modPWGS5BY/ts7l/lIf6DdxskzNR30w7BpK8qQ==}
+  /multi-term/0.1.2:
+    resolution: {integrity: sha512-ccEJc+ff30A5y75ixeXFgbuHGsVo558U5MU4PbtcGpD6KNcj8jr0004936j+5gzzCXXDTywb/8syvyk8+ZdIJA==}
     dependencies:
       anser: 2.1.1
       chalk: 4.1.2
+      cli-truncate: 2.1.0
     dev: false
 
   /mz/2.7.0:
@@ -3531,6 +3540,15 @@ packages:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
     dev: true
+
+  /slice-ansi/3.0.0:
+    resolution: {integrity: sha512-pSyv7bSTC7ig9Dcgbw9AuRNUb5k5V6oDudjZoMBSr13qpLBG7tB+zgCkARjq7xIUgdz5P1Qe8u+rSGdouOOIyQ==}
+    engines: {node: '>=8'}
+    dependencies:
+      ansi-styles: 4.3.0
+      astral-regex: 2.0.0
+      is-fullwidth-code-point: 3.0.0
+    dev: false
 
   /slice-ansi/4.0.0:
     resolution: {integrity: sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==}

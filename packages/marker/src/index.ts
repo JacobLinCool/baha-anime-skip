@@ -23,7 +23,7 @@ multi_term.on("stdout", () => {
         update(multi_term.mixed);
     }, 500);
 });
-export const main_term = new Term("Main");
+export const main_term = new Term("Console");
 multi_term.add(main_term);
 
 export async function marker(
