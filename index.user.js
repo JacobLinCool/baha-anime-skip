@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Baha Anime Skip
-// @version      0.1.4
+// @version      0.1.5
 // @description  Skip OP or other things on Bahamut Anime.
 // @author       JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)
 // @license      MIT
@@ -15,9 +15,48 @@
 // ==/UserScript==
 
 
+// src/config.ts
+var PREFIX = "bas-";
+var config = {
+  get(key) {
+    return localStorage.getItem(PREFIX + key);
+  },
+  set(key, value) {
+    localStorage.setItem(PREFIX + key, value);
+  }
+};
+if (config.get("endpoint") === null) {
+  config.set("endpoint", "https://jacoblincool.github.io/baha-anime-skip/");
+}
+
+// src/utils.ts
+function wait(selector, parent = document.body) {
+  return new Promise((resolve) => {
+    const elm = document.querySelector(selector);
+    if (elm) {
+      resolve(elm);
+      return;
+    }
+    const observer = new MutationObserver(() => {
+      const elm2 = document.querySelector(selector);
+      if (elm2) {
+        observer.disconnect();
+        resolve(elm2);
+      }
+    });
+    observer.observe(parent, { childList: true, subtree: true });
+  });
+}
+function debug(content) {
+  const elm = document.querySelector("#baha-anime-skip-debug-console");
+  if (elm) {
+    elm.value += content.toString() + "\n";
+  }
+}
+
 // src/tab.ts
 function add_tab() {
-  var _a, _b;
+  var _a, _b, _c;
   const tabs = document.querySelector(".sub_top.ani-tabs");
   const contents = document.querySelector(".ani-tab-content");
   const CONTENT_ID = "baha-anime-skip-content";
@@ -71,6 +110,25 @@ function add_tab() {
                         </div>
                     </div>
                 </div>
+
+                <div class="ani-setting-item ani-flex">
+                    <div class="ani-setting-label">
+                        <span class="ani-setting-label__mian">\u8CC7\u6599\u5EAB\u7AEF\u9EDE</span>
+                    </div>
+                </div>
+                <div style="display: flex; margin: 0 16px">
+                    <input type="text" id="bas-endpoint" class="ani-input ani-input--keyword" placeholder="https://..." value="${config.get(
+    "endpoint"
+  )}">
+                    <a
+                        id="bas-endpoint-save"
+                        href="#" 
+                        role="button" 
+                        class="bluebtn" 
+                        style="flex: 0 0 auto; padding: 6px 12px; font-size: 12px"
+                    >\u78BA\u8A8D</a>
+                </div>
+
                 <div class="ani-setting-item ani-flex">
                     <div style="width: 100%">
                         <textarea id="baha-anime-skip-debug-console" readonly style="width: 100%; height: 120px"></textarea>
@@ -82,30 +140,20 @@ function add_tab() {
   const content_elm = document.createElement("div");
   content_elm.innerHTML = content;
   contents.appendChild(content_elm);
-}
-
-// src/utils.ts
-function wait(selector, parent = document.body) {
-  return new Promise((resolve) => {
-    const elm = document.querySelector(selector);
-    if (elm) {
-      resolve(elm);
-      return;
+  (_c = document.querySelector("#bas-endpoint-save")) == null ? void 0 : _c.addEventListener("click", (e) => {
+    var _a2;
+    const endpoint = (_a2 = document.querySelector("#bas-endpoint")) == null ? void 0 : _a2.value;
+    const old = config.get("endpoint");
+    if (endpoint && endpoint !== old) {
+      config.set("endpoint", endpoint);
+      debug(`Endpoint changed from ${old} to ${endpoint}`);
     }
-    const observer = new MutationObserver(() => {
-      const elm2 = document.querySelector(selector);
-      if (elm2) {
-        observer.disconnect();
-        resolve(elm2);
-      }
-    });
-    observer.observe(parent, { childList: true, subtree: true });
+    e.preventDefault();
   });
 }
 
 // src/index.ts
 (async () => {
-  const endpoint = localStorage.getItem("anime-skip-endpoint") || "https://jacoblincool.github.io/baha-anime-skip/";
   window.addEventListener("load", () => attach().catch(debug), {
     once: true
   });
@@ -120,7 +168,7 @@ function wait(selector, parent = document.body) {
       throw new Error("Cannot find sn in query string");
     }
     const button = create_button();
-    const config = { attributes: true, attributeFilter: ["src"] };
+    const config2 = { attributes: true, attributeFilter: ["src"] };
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === "src") {
@@ -133,7 +181,7 @@ function wait(selector, parent = document.body) {
         }
       });
     });
-    observer.observe(target, config);
+    observer.observe(target, config2);
     const data = Object.entries(
       await get_data(sn).catch(() => ({}))
     ).map(([chapter, [start, duration]]) => ({ chapter, start, end: start + duration }));
@@ -199,15 +247,9 @@ function wait(selector, parent = document.body) {
     return button;
   }
   async function get_data(sn) {
-    const url = `${endpoint}${sn}.json`;
+    const url = `${config.get("endpoint")}${sn}.json`;
     const res = await fetch(url);
     const data = await res.json();
     return data;
-  }
-  function debug(content) {
-    const elm = document.querySelector("#baha-anime-skip-debug-console");
-    if (elm) {
-      elm.value += content.toString() + "\n";
-    }
   }
 })();
