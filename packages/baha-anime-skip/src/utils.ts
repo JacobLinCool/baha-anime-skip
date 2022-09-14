@@ -20,3 +20,10 @@ export function wait<K extends keyof HTMLElementTagNameMap>(
         observer.observe(parent, { childList: true, subtree: true });
     });
 }
+
+export function debug(content: string): void {
+    const elm = document.querySelector<HTMLTextAreaElement>("#baha-anime-skip-debug-console");
+    if (elm) {
+        elm.value += content.toString() + "\n";
+    }
+}

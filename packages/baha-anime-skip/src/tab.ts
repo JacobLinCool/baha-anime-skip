@@ -1,3 +1,6 @@
+import { config } from "./config";
+import { debug } from "./utils";
+
 export function add_tab(): void {
     const tabs = document.querySelector(".sub_top.ani-tabs") as HTMLDivElement;
     const contents = document.querySelector(".ani-tab-content") as HTMLDivElement;
@@ -53,6 +56,25 @@ export function add_tab(): void {
                         </div>
                     </div>
                 </div>
+
+                <div class="ani-setting-item ani-flex">
+                    <div class="ani-setting-label">
+                        <span class="ani-setting-label__mian">資料庫端點</span>
+                    </div>
+                </div>
+                <div style="display: flex; margin: 0 16px">
+                    <input type="text" id="bas-endpoint" class="ani-input ani-input--keyword" placeholder="https://..." value="${config.get(
+                        "endpoint",
+                    )}">
+                    <a
+                        id="bas-endpoint-save"
+                        href="#" 
+                        role="button" 
+                        class="bluebtn" 
+                        style="flex: 0 0 auto; padding: 6px 12px; font-size: 12px"
+                    >確認</a>
+                </div>
+
                 <div class="ani-setting-item ani-flex">
                     <div style="width: 100%">
                         <textarea id="baha-anime-skip-debug-console" readonly style="width: 100%; height: 120px"></textarea>
@@ -65,4 +87,14 @@ export function add_tab(): void {
     const content_elm = document.createElement("div");
     content_elm.innerHTML = content;
     contents.appendChild(content_elm);
+
+    document.querySelector("#bas-endpoint-save")?.addEventListener("click", (e) => {
+        const endpoint = document.querySelector<HTMLInputElement>("#bas-endpoint")?.value;
+        const old = config.get("endpoint");
+        if (endpoint && endpoint !== old) {
+            config.set("endpoint", endpoint);
+            debug(`Endpoint changed from ${old} to ${endpoint}`);
+        }
+        e.preventDefault();
+    });
 }

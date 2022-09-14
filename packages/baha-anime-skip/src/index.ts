@@ -1,11 +1,8 @@
+import { config } from "./config";
 import { add_tab } from "./tab";
-import { wait } from "./utils";
+import { wait, debug } from "./utils";
 
 (async () => {
-    const endpoint =
-        localStorage.getItem("anime-skip-endpoint") ||
-        "https://jacoblincool.github.io/baha-anime-skip/";
-
     window.addEventListener("load", () => attach().catch(debug), {
         once: true,
     });
@@ -118,16 +115,9 @@ import { wait } from "./utils";
     }
 
     async function get_data(sn: string): Promise<Record<string, [number, number]>> {
-        const url = `${endpoint}${sn}.json`;
+        const url = `${config.get("endpoint")}${sn}.json`;
         const res = await fetch(url);
         const data = await res.json();
         return data;
-    }
-
-    function debug(content: string) {
-        const elm = document.querySelector<HTMLTextAreaElement>("#baha-anime-skip-debug-console");
-        if (elm) {
-            elm.value += content.toString() + "\n";
-        }
     }
 })();
