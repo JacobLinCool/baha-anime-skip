@@ -15,7 +15,7 @@
         "commander": "^9.4.0",
         "file-mapping": "^0.2.1",
         "lcsb": "^0.1.3",
-        "log-update": "^4.0.0",
+        "log-update": "^5.0.0",
         "multi-term": "^0.1.2",
         "node-fetch": "^2.6.7",
         "ora": "^5.4.1"
