@@ -18,7 +18,7 @@
         "log-update": "^4.0.0",
         "multi-term": "^0.1.2",
         "node-fetch": "^2.6.7",
-        "ora": "^5.4.1"
+        "ora": "^6.0.0"
     },
     "devDependencies": {
         "@types/node-fetch": "^2.6.2",
