@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Baha Anime Skip
-// @version      0.1.5
+// @version      0.1.6
 // @description  Skip OP or other things on Bahamut Anime.
 // @author       JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)
 // @license      MIT
@@ -55,10 +55,10 @@ function debug(content) {
 }
 
 // src/tab.ts
-function add_tab() {
+async function add_tab() {
   var _a, _b, _c;
-  const tabs = document.querySelector(".sub_top.ani-tabs");
-  const contents = document.querySelector(".ani-tab-content");
+  const tabs = await wait(".sub_top.ani-tabs");
+  const contents = await wait(".ani-tab-content");
   const CONTENT_ID = "baha-anime-skip-content";
   const tab = `
         <div id="cm-settings" class="ani-tabs__item">
@@ -154,11 +154,12 @@ function add_tab() {
 
 // src/index.ts
 (async () => {
-  window.addEventListener("load", () => attach().catch(debug), {
-    once: true
+  attach().catch((err) => {
+    console.error(err);
+    debug(err.toString());
   });
   async function attach() {
-    add_tab();
+    await add_tab();
     const target = await wait("video");
     if (!target) {
       throw new Error("Cannot find video element");
@@ -237,7 +238,7 @@ function add_tab() {
     button.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
     button.style.color = "white";
     button.style.fontSize = "16px";
-    button.style.zIndex = "999";
+    button.style.zIndex = "9";
     button.style.justifyContent = "center";
     button.style.alignItems = "center";
     button.style.cursor = "pointer";
