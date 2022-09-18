@@ -103,7 +103,7 @@ import { wait, debug } from "./utils";
         button.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
         button.style.color = "white";
         button.style.fontSize = "16px";
-        button.style.zIndex = "999";
+        button.style.zIndex = "9";
         button.style.justifyContent = "center";
         button.style.alignItems = "center";
         button.style.cursor = "pointer";
