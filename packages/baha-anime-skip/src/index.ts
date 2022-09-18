@@ -3,12 +3,13 @@ import { add_tab } from "./tab";
 import { wait, debug } from "./utils";
 
 (async () => {
-    window.addEventListener("load", () => attach().catch(debug), {
-        once: true,
+    attach().catch((err) => {
+        console.error(err);
+        debug(err.toString());
     });
 
     async function attach() {
-        add_tab();
+        await add_tab();
 
         const target = await wait("video");
         if (!target) {

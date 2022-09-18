@@ -1,9 +1,9 @@
 import { config } from "./config";
-import { debug } from "./utils";
+import { debug, wait } from "./utils";
 
-export function add_tab(): void {
-    const tabs = document.querySelector(".sub_top.ani-tabs") as HTMLDivElement;
-    const contents = document.querySelector(".ani-tab-content") as HTMLDivElement;
+export async function add_tab(): Promise<void> {
+    const tabs = await wait<HTMLDivElement>(".sub_top.ani-tabs");
+    const contents = await wait<HTMLDivElement>(".ani-tab-content");
 
     const CONTENT_ID = "baha-anime-skip-content";
 

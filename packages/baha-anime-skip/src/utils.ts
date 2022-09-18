@@ -1,5 +1,13 @@
 export function wait<K extends keyof HTMLElementTagNameMap>(
     selector: K,
+    parent?: HTMLElement,
+): Promise<HTMLElementTagNameMap[K]>;
+export function wait<E extends Element = Element>(
+    selectors: string,
+    parent?: HTMLElement,
+): Promise<E>;
+export function wait<K extends keyof HTMLElementTagNameMap>(
+    selector: K,
     parent = document.body,
 ): Promise<HTMLElementTagNameMap[K]> {
     return new Promise((resolve) => {
