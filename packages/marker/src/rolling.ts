@@ -72,6 +72,10 @@ async function main() {
         );
     }
 
+    while ((await Promise.all(tasks)).length !== tasks.length) {
+        // keep waiting
+    }
+
     if (count > 0) {
         fs.writeFileSync(FILE, JSON.stringify(original));
     }
