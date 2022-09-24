@@ -1,12 +1,22 @@
+import { prefetch_all, prefetch_check, prefetch_ui } from "./prefetch";
 import { config } from "./config";
 import { add_tab } from "./tab";
-import { wait, debug } from "./utils";
+import { wait, debug, get_data } from "./utils";
 
 (async () => {
-    attach().catch((err) => {
-        console.error(err);
-        debug(err.toString());
-    });
+    attach()
+        .catch((err) => {
+            console.error(err);
+            debug(err.toString());
+        })
+        .then(() => {
+            if (config.get("prefetch") === "1" && config.get("cache") === "1") {
+                prefetch_ui();
+                prefetch_all().then(() => {
+                    prefetch_check();
+                });
+            }
+        });
 
     async function attach() {
         await add_tab();
@@ -113,12 +123,5 @@ import { wait, debug } from "./utils";
         button.innerHTML = "Skip";
 
         return button;
-    }
-
-    async function get_data(sn: string): Promise<Record<string, [number, number]>> {
-        const url = `${config.get("endpoint")}${sn}.json`;
-        const res = await fetch(url);
-        const data = await res.json();
-        return data;
     }
 })();

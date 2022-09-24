@@ -58,6 +58,30 @@ export async function add_tab(): Promise<void> {
                 </div>
 
                 <div class="ani-setting-item ani-flex">
+                    <div class="ani-setting-label">啟用快取</div>
+                    <div class="ani-setting-value ani-set-flex-right">
+                        <div class="ani-checkbox">
+                            <label class="ani-checkbox__label">
+                                <input id="bas-use-cache" type="checkbox">
+                                <div class="ani-checkbox__button"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ani-setting-item ani-flex">
+                    <div class="ani-setting-label">系列預取</div>
+                    <div class="ani-setting-value ani-set-flex-right">
+                        <div class="ani-checkbox">
+                            <label class="ani-checkbox__label">
+                                <input id="bas-use-prefetch" type="checkbox">
+                                <div class="ani-checkbox__button"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ani-setting-item ani-flex">
                     <div class="ani-setting-label">
                         <span class="ani-setting-label__mian">資料庫端點</span>
                     </div>
@@ -87,6 +111,25 @@ export async function add_tab(): Promise<void> {
     const content_elm = document.createElement("div");
     content_elm.innerHTML = content;
     contents.appendChild(content_elm);
+
+    if (config.get("cache") === "1") {
+        document.getElementById("bas-use-cache")?.setAttribute("checked", "");
+    }
+    document.querySelector("#bas-use-cache")?.addEventListener("change", (e) => {
+        config.set("cache", (e.target as HTMLInputElement).checked ? "1" : "0");
+        if ((e.target as HTMLInputElement).checked === false) {
+            Object.keys(localStorage)
+                .filter((key) => key.startsWith("bas-cache-"))
+                .forEach((key) => localStorage.removeItem(key));
+        }
+    });
+
+    if (config.get("prefetch") === "1") {
+        document.getElementById("bas-use-prefetch")?.setAttribute("checked", "");
+    }
+    document.querySelector("#bas-use-prefetch")?.addEventListener("change", (e) => {
+        config.set("prefetch", (e.target as HTMLInputElement).checked ? "1" : "0");
+    });
 
     document.querySelector("#bas-endpoint-save")?.addEventListener("click", (e) => {
         const endpoint = document.querySelector<HTMLInputElement>("#bas-endpoint")?.value;
