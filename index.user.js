@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Baha Anime Skip
-// @version      0.1.6
+// @version      0.1.7
 // @description  Skip OP or other things on Bahamut Anime.
 // @author       JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)
 // @license      MIT
@@ -53,10 +53,58 @@ function debug(content) {
     elm.value += content.toString() + "\n";
   }
 }
+async function get_data(sn) {
+  if (config.get("cache") === "1" && config.get(`cache-${sn}`)) {
+    return JSON.parse(config.get(`cache-${sn}`));
+  }
+  const url = `${config.get("endpoint")}${sn}.json`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if (config.get("cache") === "1") {
+    config.set(`cache-${sn}`, JSON.stringify(data));
+  }
+  return data;
+}
+
+// src/prefetch.ts
+function prefetch_ui() {
+  if (!document.querySelector("#bas-style")) {
+    const style = document.createElement("style");
+    style.id = "bas-style";
+    style.innerHTML = `.season ul li a.bas-cached:after { content: "v"; color: orange; position: absolute; top: 0; left: 0; padding: 0 4px; }`;
+    document.head.appendChild(style);
+  }
+}
+async function prefetch_all() {
+  await Promise.all(
+    Array.from(document.querySelectorAll(".season ul li a")).map(
+      async (elm) => {
+        var _a;
+        const sn = (_a = elm.href.match(/sn=(\d+)/)) == null ? void 0 : _a[1];
+        if (sn && !config.get(`cache-${sn}`)) {
+          try {
+            await get_data(sn);
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      }
+    )
+  );
+}
+function prefetch_check() {
+  Array.from(document.querySelectorAll(".season ul li a")).map((elm) => {
+    var _a;
+    const sn = (_a = elm.href.match(/sn=(\d+)/)) == null ? void 0 : _a[1];
+    if (sn && config.get(`cache-${sn}`)) {
+      elm.classList.add("bas-cached");
+    }
+  });
+}
 
 // src/tab.ts
 async function add_tab() {
-  var _a, _b, _c;
+  var _a, _b, _c, _d, _e, _f, _g;
   const tabs = await wait(".sub_top.ani-tabs");
   const contents = await wait(".ani-tab-content");
   const CONTENT_ID = "baha-anime-skip-content";
@@ -112,6 +160,30 @@ async function add_tab() {
                 </div>
 
                 <div class="ani-setting-item ani-flex">
+                    <div class="ani-setting-label">\u555F\u7528\u5FEB\u53D6</div>
+                    <div class="ani-setting-value ani-set-flex-right">
+                        <div class="ani-checkbox">
+                            <label class="ani-checkbox__label">
+                                <input id="bas-use-cache" type="checkbox">
+                                <div class="ani-checkbox__button"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ani-setting-item ani-flex">
+                    <div class="ani-setting-label">\u7CFB\u5217\u9810\u53D6</div>
+                    <div class="ani-setting-value ani-set-flex-right">
+                        <div class="ani-checkbox">
+                            <label class="ani-checkbox__label">
+                                <input id="bas-use-prefetch" type="checkbox">
+                                <div class="ani-checkbox__button"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ani-setting-item ani-flex">
                     <div class="ani-setting-label">
                         <span class="ani-setting-label__mian">\u8CC7\u6599\u5EAB\u7AEF\u9EDE</span>
                     </div>
@@ -140,7 +212,22 @@ async function add_tab() {
   const content_elm = document.createElement("div");
   content_elm.innerHTML = content;
   contents.appendChild(content_elm);
-  (_c = document.querySelector("#bas-endpoint-save")) == null ? void 0 : _c.addEventListener("click", (e) => {
+  if (config.get("cache") === "1") {
+    (_c = document.getElementById("bas-use-cache")) == null ? void 0 : _c.setAttribute("checked", "");
+  }
+  (_d = document.querySelector("#bas-use-cache")) == null ? void 0 : _d.addEventListener("change", (e) => {
+    config.set("cache", e.target.checked ? "1" : "0");
+    if (e.target.checked === false) {
+      Object.keys(localStorage).filter((key) => key.startsWith("bas-cache-")).forEach((key) => localStorage.removeItem(key));
+    }
+  });
+  if (config.get("prefetch") === "1") {
+    (_e = document.getElementById("bas-use-prefetch")) == null ? void 0 : _e.setAttribute("checked", "");
+  }
+  (_f = document.querySelector("#bas-use-prefetch")) == null ? void 0 : _f.addEventListener("change", (e) => {
+    config.set("prefetch", e.target.checked ? "1" : "0");
+  });
+  (_g = document.querySelector("#bas-endpoint-save")) == null ? void 0 : _g.addEventListener("click", (e) => {
     var _a2;
     const endpoint = (_a2 = document.querySelector("#bas-endpoint")) == null ? void 0 : _a2.value;
     const old = config.get("endpoint");
@@ -157,6 +244,13 @@ async function add_tab() {
   attach().catch((err) => {
     console.error(err);
     debug(err.toString());
+  }).then(() => {
+    if (config.get("prefetch") === "1" && config.get("cache") === "1") {
+      prefetch_ui();
+      prefetch_all().then(() => {
+        prefetch_check();
+      });
+    }
   });
   async function attach() {
     await add_tab();
@@ -246,11 +340,5 @@ async function add_tab() {
     button.style.overflow = "hidden";
     button.innerHTML = "Skip";
     return button;
-  }
-  async function get_data(sn) {
-    const url = `${config.get("endpoint")}${sn}.json`;
-    const res = await fetch(url);
-    const data = await res.json();
-    return data;
   }
 })();
