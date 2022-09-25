@@ -26,6 +26,12 @@ A panel with report link and debug info is also attached. If you click the link,
 
 ![Panel](./images/panel.png)
 
+## Submit Issue
+
+You can simply click "GitHub Issues" button in the panel, then add some additional information to the issue body.
+
+https://user-images.githubusercontent.com/28478594/192158622-d82e8527-3523-4469-84e6-691be23e099f.mp4
+
 ## Sponsors
 
 Thanks the following generous sponsors for supporting this project.
