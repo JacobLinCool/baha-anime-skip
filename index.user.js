@@ -291,7 +291,7 @@ async function add_tab() {
       let has_event = false;
       for (let i = 0; i < data.length; i++) {
         if (data[i].start <= time && time <= data[i].end) {
-          button.style.opacity = "1";
+          button.style.opacity = "0.85";
           button.innerHTML = `Skip ${data[i].chapter}`;
           button.onclick = () => {
             target.currentTime = data[i].end;
