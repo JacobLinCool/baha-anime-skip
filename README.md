@@ -6,7 +6,7 @@ Skip OP or other things on Bahamut Anime.
 
 Database is stored in [`packages/baha-anime-skip-db/data.json`](packages/baha-anime-skip-db/data.json).
 
-Currently, the database includes OP timestamps of **7000+** episodes. Most of them are automatically detected by programs based on some hypotheses, source code is available in [`helper`](packages/helper) and [`marker`](packages/marker).
+Currently, the database includes OP timestamp of **10,000+** episodes. Most of them are automatically detected by programs based on some hypotheses, source code is available in [`helper`](packages/helper) and [`marker`](packages/marker).
 
 **Any PRs or Issues are welcome.**
 
