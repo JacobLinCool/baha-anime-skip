@@ -109,6 +109,8 @@ export async function add_tab(): Promise<void> {
     `;
 
     const content_elm = document.createElement("div");
+    content_elm.style.overflow = "hidden auto";
+    content_elm.style.height = "100%";
     content_elm.innerHTML = content;
     contents.appendChild(content_elm);
 
