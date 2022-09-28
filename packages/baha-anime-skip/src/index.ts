@@ -1,12 +1,13 @@
 import { prefetch_all, prefetch_check, prefetch_ui } from "./prefetch";
 import { config } from "./config";
 import { add_tab } from "./tab";
+import { button } from "./button";
 import { wait, debug, get_data } from "./utils";
+import { Event } from "./types";
 
 (async () => {
     attach()
         .catch((err) => {
-            console.error(err);
             debug(err.toString());
         })
         .then(() => {
@@ -31,8 +32,6 @@ import { wait, debug, get_data } from "./utils";
             throw new Error("Cannot find sn in query string");
         }
 
-        const button = create_button();
-
         const config = { attributes: true, attributeFilter: ["src"] };
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -49,79 +48,78 @@ import { wait, debug, get_data } from "./utils";
         });
         observer.observe(target, config);
 
-        const data: { chapter: string; start: number; end: number }[] = Object.entries(
-            await get_data(sn).catch(() => ({})),
-        ).map(([chapter, [start, duration]]) => ({ chapter, start, end: start + duration }));
-        console.log("Chapters", JSON.stringify(data, null, 4));
-        debug(JSON.stringify(data, null, 4));
+        const data: Event[] = Object.entries(await get_data(sn).catch(() => ({}))).map(
+            ([chapter, [start, duration]]) => ({ chapter, start, end: start + duration }),
+        );
+        debug("Chapters", JSON.stringify(data, null, 4));
 
         if (data.length === 0) {
             data.push({ chapter: "NEVT", start: 0, end: 3 });
         }
 
-        const none = () => debug("Skip button clicked");
+        let prev_event: Event | null = null;
+        let temp_disabled_event: Event | null = null;
+
+        const none =
+            (type = "Skip button") =>
+            () =>
+                debug(`${type} clicked`);
         target.addEventListener("timeupdate", () => {
             const time = target.currentTime;
 
-            let has_event = false;
+            let curr_event: Event | null = null;
             for (let i = 0; i < data.length; i++) {
                 if (data[i].start <= time && time <= data[i].end) {
-                    button.style.opacity = "0.85";
-                    button.innerHTML = `Skip ${data[i].chapter}`;
-
-                    button.onclick = () => {
-                        target.currentTime = data[i].end;
-                        button.onclick = none;
-                        debug(`Skip ${data[i].chapter} clicked, go to ${data[i].end}`);
-                    };
-                    has_event = true;
-
-                    if (data[i].chapter === "NEVT") {
-                        button.innerHTML = "貢獻 OP 資訊";
-                        button.onclick = () => {
-                            window.open(
-                                "https://github.com/JacobLinCool/baha-anime-skip#readme",
-                                "_blank",
-                            );
-                        };
-                    }
-
+                    curr_event = data[i];
                     break;
                 }
             }
 
-            if (!has_event) {
+            if (curr_event === null && prev_event !== null) {
+                debug(`Leaving ${prev_event.chapter}`);
                 button.style.opacity = "0";
-                button.onclick = none;
+                button.onclick = none();
+                button.oncontextmenu = none("Context menu");
+                prev_event = null;
+                temp_disabled_event = null;
+            } else if (
+                curr_event &&
+                curr_event !== prev_event &&
+                curr_event !== temp_disabled_event
+            ) {
+                const event = curr_event;
+                debug(`Entering ${event.chapter}`);
+
+                button.style.opacity = "0.85";
+                button.innerHTML = `Skip ${event.chapter}`;
+
+                button.onclick = () => {
+                    target.currentTime = event.end;
+                    button.onclick = none();
+                    button.oncontextmenu = none("Context menu");
+                    debug(`Skip ${event.chapter} clicked, go to ${event.end}`);
+                };
+
+                button.oncontextmenu = () => {
+                    debug(`Hiding ${event.chapter}`);
+                    temp_disabled_event = event;
+                    button.style.opacity = "0";
+                    button.onclick = none();
+                    button.oncontextmenu = none("Context menu");
+                };
+
+                if (event.chapter === "NEVT") {
+                    button.innerHTML = "貢獻 OP 資訊";
+                    button.onclick = () => {
+                        window.open(
+                            "https://github.com/JacobLinCool/baha-anime-skip#readme",
+                            "_blank",
+                        );
+                    };
+                }
+
+                prev_event = event;
             }
         });
-    }
-
-    function create_button(): HTMLButtonElement {
-        const button = document.createElement("button");
-
-        button.style.opacity = "0";
-        button.style.transition = "opacity 0.3s";
-        button.style.position = "absolute";
-        button.style.bottom = "50px";
-        button.style.right = "0px";
-        button.style.margin = "20px";
-        button.style.width = "120px";
-        button.style.height = "40px";
-        button.style.border = "1px solid lightgray";
-        button.style.borderRadius = "4px";
-        button.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-        button.style.color = "white";
-        button.style.fontSize = "16px";
-        button.style.zIndex = "9";
-        button.style.justifyContent = "center";
-        button.style.alignItems = "center";
-        button.style.cursor = "pointer";
-        button.style.pointerEvents = "auto";
-        button.style.overflow = "hidden";
-
-        button.innerHTML = "Skip";
-
-        return button;
     }
 })();

@@ -31,10 +31,11 @@ export function wait<K extends keyof HTMLElementTagNameMap>(
     });
 }
 
-export function debug(content: string): void {
+export function debug(...contents: string[]): void {
+    console.log(...contents);
     const elm = document.querySelector<HTMLTextAreaElement>("#baha-anime-skip-debug-console");
     if (elm) {
-        elm.value += content.toString() + "\n";
+        elm.value += contents.join(" ").toString() + "\n";
     }
 }
 
