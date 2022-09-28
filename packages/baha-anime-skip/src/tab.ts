@@ -101,7 +101,7 @@ export async function add_tab(): Promise<void> {
 
                 <div class="ani-setting-item ani-flex">
                     <div style="width: 100%">
-                        <textarea id="baha-anime-skip-debug-console" readonly style="width: 100%; height: 120px"></textarea>
+                        <textarea id="baha-anime-skip-debug-console" readonly class="ani-input" style="width: 100%; height: 120px; background: rgba(255, 255, 255, .1)"></textarea>
                     </div>
                 </div>
             </div>
