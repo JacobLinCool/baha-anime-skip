@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Baha Anime Skip
-// @version      0.1.7
+// @version      0.1.8
 // @description  Skip OP or other things on Bahamut Anime.
 // @author       JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)
 // @license      MIT
@@ -47,10 +47,11 @@ function wait(selector, parent = document.body) {
     observer.observe(parent, { childList: true, subtree: true });
   });
 }
-function debug(content) {
+function debug(...contents) {
+  console.log(...contents);
   const elm = document.querySelector("#baha-anime-skip-debug-console");
   if (elm) {
-    elm.value += content.toString() + "\n";
+    elm.value += contents.join(" ").toString() + "\n";
   }
 }
 async function get_data(sn) {
@@ -203,13 +204,15 @@ async function add_tab() {
 
                 <div class="ani-setting-item ani-flex">
                     <div style="width: 100%">
-                        <textarea id="baha-anime-skip-debug-console" readonly style="width: 100%; height: 120px"></textarea>
+                        <textarea id="baha-anime-skip-debug-console" readonly class="ani-input" style="width: 100%; height: 120px; background: rgba(255, 255, 255, .1)"></textarea>
                     </div>
                 </div>
             </div>
         </div>
     `;
   const content_elm = document.createElement("div");
+  content_elm.style.overflow = "hidden auto";
+  content_elm.style.height = "100%";
   content_elm.innerHTML = content;
   contents.appendChild(content_elm);
   if (config.get("cache") === "1") {
@@ -239,10 +242,37 @@ async function add_tab() {
   });
 }
 
+// src/button.ts
+var button = create_button();
+function create_button() {
+  const button2 = document.createElement("button");
+  Object.assign(button2.style, {
+    opacity: "0",
+    transition: "opacity 0.3s",
+    position: "absolute",
+    bottom: "50px",
+    right: "0px",
+    margin: "20px",
+    width: "120px",
+    height: "40px",
+    border: "1px solid lightgray",
+    borderRadius: "4px",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    color: "white",
+    fontSize: "16px",
+    zIndex: "9",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    pointerEvents: "auto",
+    overflow: "hidden"
+  });
+  return button2;
+}
+
 // src/index.ts
 (async () => {
   attach().catch((err) => {
-    console.error(err);
     debug(err.toString());
   }).then(() => {
     if (config.get("prefetch") === "1" && config.get("cache") === "1") {
@@ -262,7 +292,6 @@ async function add_tab() {
     if (!sn) {
       throw new Error("Cannot find sn in query string");
     }
-    const button = create_button();
     const config2 = { attributes: true, attributeFilter: ["src"] };
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -277,68 +306,61 @@ async function add_tab() {
       });
     });
     observer.observe(target, config2);
-    const data = Object.entries(
-      await get_data(sn).catch(() => ({}))
-    ).map(([chapter, [start, duration]]) => ({ chapter, start, end: start + duration }));
-    console.log("Chapters", JSON.stringify(data, null, 4));
-    debug(JSON.stringify(data, null, 4));
+    const data = Object.entries(await get_data(sn).catch(() => ({}))).map(
+      ([chapter, [start, duration]]) => ({ chapter, start, end: start + duration })
+    );
+    debug("Chapters", JSON.stringify(data, null, 4));
     if (data.length === 0) {
       data.push({ chapter: "NEVT", start: 0, end: 3 });
     }
-    const none = () => debug("Skip button clicked");
+    let prev_event = null;
+    let temp_disabled_event = null;
+    const none = (type = "Skip button") => () => debug(`${type} clicked`);
     target.addEventListener("timeupdate", () => {
       const time = target.currentTime;
-      let has_event = false;
+      let curr_event = null;
       for (let i = 0; i < data.length; i++) {
         if (data[i].start <= time && time <= data[i].end) {
-          button.style.opacity = "0.85";
-          button.innerHTML = `Skip ${data[i].chapter}`;
-          button.onclick = () => {
-            target.currentTime = data[i].end;
-            button.onclick = none;
-            debug(`Skip ${data[i].chapter} clicked, go to ${data[i].end}`);
-          };
-          has_event = true;
-          if (data[i].chapter === "NEVT") {
-            button.innerHTML = "\u8CA2\u737B OP \u8CC7\u8A0A";
-            button.onclick = () => {
-              window.open(
-                "https://github.com/JacobLinCool/baha-anime-skip#readme",
-                "_blank"
-              );
-            };
-          }
+          curr_event = data[i];
           break;
         }
       }
-      if (!has_event) {
+      if (curr_event === null && prev_event !== null) {
+        debug(`Leaving ${prev_event.chapter}`);
         button.style.opacity = "0";
-        button.onclick = none;
+        button.onclick = none();
+        button.oncontextmenu = none("Context menu");
+        prev_event = null;
+        temp_disabled_event = null;
+      } else if (curr_event && curr_event !== prev_event && curr_event !== temp_disabled_event) {
+        const event = curr_event;
+        debug(`Entering ${event.chapter}`);
+        button.style.opacity = "0.85";
+        button.innerHTML = `Skip ${event.chapter}`;
+        button.onclick = () => {
+          target.currentTime = event.end;
+          button.onclick = none();
+          button.oncontextmenu = none("Context menu");
+          debug(`Skip ${event.chapter} clicked, go to ${event.end}`);
+        };
+        button.oncontextmenu = () => {
+          debug(`Hiding ${event.chapter}`);
+          temp_disabled_event = event;
+          button.style.opacity = "0";
+          button.onclick = none();
+          button.oncontextmenu = none("Context menu");
+        };
+        if (event.chapter === "NEVT") {
+          button.innerHTML = "\u8CA2\u737B OP \u8CC7\u8A0A";
+          button.onclick = () => {
+            window.open(
+              "https://github.com/JacobLinCool/baha-anime-skip#readme",
+              "_blank"
+            );
+          };
+        }
+        prev_event = event;
       }
     });
-  }
-  function create_button() {
-    const button = document.createElement("button");
-    button.style.opacity = "0";
-    button.style.transition = "opacity 0.3s";
-    button.style.position = "absolute";
-    button.style.bottom = "50px";
-    button.style.right = "0px";
-    button.style.margin = "20px";
-    button.style.width = "120px";
-    button.style.height = "40px";
-    button.style.border = "1px solid lightgray";
-    button.style.borderRadius = "4px";
-    button.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-    button.style.color = "white";
-    button.style.fontSize = "16px";
-    button.style.zIndex = "9";
-    button.style.justifyContent = "center";
-    button.style.alignItems = "center";
-    button.style.cursor = "pointer";
-    button.style.pointerEvents = "auto";
-    button.style.overflow = "hidden";
-    button.innerHTML = "Skip";
-    return button;
   }
 })();
