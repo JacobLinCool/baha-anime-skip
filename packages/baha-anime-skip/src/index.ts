@@ -1,8 +1,9 @@
+import { wait } from "wait-elm";
 import { prefetch_all, prefetch_check, prefetch_ui } from "./prefetch";
 import { config } from "./config";
 import { add_tab } from "./tab";
 import { button } from "./button";
-import { wait, debug, get_data } from "./utils";
+import { debug, get_data } from "./utils";
 import { Event } from "./types";
 
 (async () => {

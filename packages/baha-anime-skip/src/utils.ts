@@ -1,36 +1,5 @@
 import { config } from "./config";
 
-export function wait<K extends keyof HTMLElementTagNameMap>(
-    selector: K,
-    parent?: HTMLElement,
-): Promise<HTMLElementTagNameMap[K]>;
-export function wait<E extends Element = Element>(
-    selectors: string,
-    parent?: HTMLElement,
-): Promise<E>;
-export function wait<K extends keyof HTMLElementTagNameMap>(
-    selector: K,
-    parent = document.body,
-): Promise<HTMLElementTagNameMap[K]> {
-    return new Promise((resolve) => {
-        const elm = document.querySelector<HTMLElementTagNameMap[K]>(selector);
-        if (elm) {
-            resolve(elm);
-            return;
-        }
-
-        const observer = new MutationObserver(() => {
-            const elm = document.querySelector<HTMLElementTagNameMap[K]>(selector);
-            if (elm) {
-                observer.disconnect();
-                resolve(elm);
-            }
-        });
-
-        observer.observe(parent, { childList: true, subtree: true });
-    });
-}
-
 export function debug(...contents: string[]): void {
     console.log(...contents);
     const elm = document.querySelector<HTMLTextAreaElement>("#baha-anime-skip-debug-console");

@@ -41,9 +41,11 @@ importers:
       tsx: ^3.9.0
       typedoc: ^0.23.11
       typescript: ^4.8.2
+      wait-elm: ^0.1.0
       zod: ^3.18.0
     dependencies:
       baha-anime-skip-db: link:../baha-anime-skip-db
+      wait-elm: 0.1.0
     devDependencies:
       tsup: 6.2.3_typescript@4.8.2
       tsx: 3.9.0
@@ -3933,6 +3935,10 @@ packages:
   /vscode-textmate/6.0.0:
     resolution: {integrity: sha512-gu73tuZfJgu+mvCSy4UZwd2JXykjK9zAZsfmDeut5dx/1a7FeTk0XwJsSuqQn+cuMCGVbIBfl+s53X4T19DnzQ==}
     dev: true
+
+  /wait-elm/0.1.0:
+    resolution: {integrity: sha512-+858U6ziD3gqFTRgVNQgIdckquD+l/BgZdG4hROE8uTnVrH+FRLqlwmoRwUe2+myaZrjjx4jc1o/yHwb/X0pbA==}
+    dev: false
 
   /walker/1.0.8:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}

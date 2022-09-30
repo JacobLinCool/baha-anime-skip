@@ -14,7 +14,8 @@
         "build": "tsup"
     },
     "dependencies": {
-        "baha-anime-skip-db": "workspace:*"
+        "baha-anime-skip-db": "workspace:*",
+        "wait-elm": "^0.1.0"
     },
     "devDependencies": {
         "tsup": "^6.2.3",

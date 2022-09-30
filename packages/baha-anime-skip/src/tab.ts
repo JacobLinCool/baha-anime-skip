@@ -1,5 +1,6 @@
+import { wait } from "wait-elm";
 import { config } from "./config";
-import { debug, wait } from "./utils";
+import { debug } from "./utils";
 
 export async function add_tab(): Promise<void> {
     const tabs = await wait<HTMLDivElement>(".sub_top.ani-tabs");
@@ -115,7 +116,7 @@ export async function add_tab(): Promise<void> {
     contents.appendChild(content_elm);
 
     if (config.get("cache") === "1") {
-        document.getElementById("bas-use-cache")?.setAttribute("checked", "");
+        document.querySelector("#bas-use-cache")?.setAttribute("checked", "");
     }
     document.querySelector("#bas-use-cache")?.addEventListener("change", (e) => {
         config.set("cache", (e.target as HTMLInputElement).checked ? "1" : "0");
@@ -127,7 +128,7 @@ export async function add_tab(): Promise<void> {
     });
 
     if (config.get("prefetch") === "1") {
-        document.getElementById("bas-use-prefetch")?.setAttribute("checked", "");
+        document.querySelector("#bas-use-prefetch")?.setAttribute("checked", "");
     }
     document.querySelector("#bas-use-prefetch")?.addEventListener("change", (e) => {
         config.set("prefetch", (e.target as HTMLInputElement).checked ? "1" : "0");

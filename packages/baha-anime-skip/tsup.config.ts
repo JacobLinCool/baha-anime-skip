@@ -22,9 +22,11 @@ export default defineConfig(() => ({
     entry: ["src/index.ts"],
     outDir: "dist",
     target: "node16",
+    platform: "browser",
     format: ["esm"],
     clean: true,
     splitting: false,
+    noExternal: ["wait-elm"],
     banner: () => ({
         js: banner,
     }),
