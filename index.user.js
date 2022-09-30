@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Baha Anime Skip
-// @version      0.1.8
+// @version      0.1.9
 // @description  Skip OP or other things on Bahamut Anime.
 // @author       JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)
 // @license      MIT
@@ -14,6 +14,105 @@
 // @grant        none
 // ==/UserScript==
 
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+
+// ../../node_modules/.pnpm/wait-elm@0.1.0/node_modules/wait-elm/lib/index.js
+var require_lib = __commonJS({
+  "../../node_modules/.pnpm/wait-elm@0.1.0/node_modules/wait-elm/lib/index.js"(exports, module) {
+    "use strict";
+    var __defProp2 = Object.defineProperty;
+    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
+    var __getOwnPropNames2 = Object.getOwnPropertyNames;
+    var __hasOwnProp2 = Object.prototype.hasOwnProperty;
+    var __export = (target, all) => {
+      for (var name in all)
+        __defProp2(target, name, { get: all[name], enumerable: true });
+    };
+    var __copyProps2 = (to, from, except, desc) => {
+      if (from && typeof from === "object" || typeof from === "function") {
+        for (let key of __getOwnPropNames2(from))
+          if (!__hasOwnProp2.call(to, key) && key !== except)
+            __defProp2(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });
+      }
+      return to;
+    };
+    var __toCommonJS = (mod) => __copyProps2(__defProp2({}, "__esModule", { value: true }), mod);
+    var src_exports = {};
+    __export(src_exports, {
+      Watcher: () => Watcher,
+      wait: () => wait3,
+      watcher: () => watcher
+    });
+    module.exports = __toCommonJS(src_exports);
+    var Watcher = class {
+      targets = /* @__PURE__ */ new Map();
+      observing = false;
+      root;
+      observer;
+      constructor(root = document.body) {
+        this.root = root;
+        this.observer = new MutationObserver(this.callback.bind(this));
+      }
+      callback() {
+        var _a;
+        for (const selector of this.targets.keys()) {
+          const elm = document.querySelector(selector);
+          if (elm) {
+            (_a = this.targets.get(selector)) == null ? void 0 : _a[1](elm);
+            if (this.targets.delete(selector) && this.targets.size === 0) {
+              this.observer.disconnect();
+              this.observing = false;
+            }
+          }
+        }
+      }
+      async wait(selector) {
+        const elm = document.querySelector(selector);
+        if (elm) {
+          return elm;
+        }
+        const exists = this.targets.get(selector);
+        if (exists) {
+          return exists[0];
+        }
+        if (this.observing === false) {
+          this.observer.observe(this.root, { childList: true, subtree: true });
+          this.observing = true;
+        }
+        const promise = new Promise((resolve) => {
+          this.targets.set(selector, [Promise.resolve(this.root), resolve]);
+        });
+        this.targets.get(selector)[0] = promise;
+        return promise;
+      }
+    };
+    var watcher = new Watcher();
+    var wait3 = watcher.wait.bind(watcher);
+  }
+});
+
+// src/index.ts
+var import_wait_elm2 = __toESM(require_lib(), 1);
 
 // src/config.ts
 var PREFIX = "bas-";
@@ -30,23 +129,6 @@ if (config.get("endpoint") === null) {
 }
 
 // src/utils.ts
-function wait(selector, parent = document.body) {
-  return new Promise((resolve) => {
-    const elm = document.querySelector(selector);
-    if (elm) {
-      resolve(elm);
-      return;
-    }
-    const observer = new MutationObserver(() => {
-      const elm2 = document.querySelector(selector);
-      if (elm2) {
-        observer.disconnect();
-        resolve(elm2);
-      }
-    });
-    observer.observe(parent, { childList: true, subtree: true });
-  });
-}
 function debug(...contents) {
   console.log(...contents);
   const elm = document.querySelector("#baha-anime-skip-debug-console");
@@ -104,10 +186,11 @@ function prefetch_check() {
 }
 
 // src/tab.ts
+var import_wait_elm = __toESM(require_lib(), 1);
 async function add_tab() {
   var _a, _b, _c, _d, _e, _f, _g;
-  const tabs = await wait(".sub_top.ani-tabs");
-  const contents = await wait(".ani-tab-content");
+  const tabs = await (0, import_wait_elm.wait)(".sub_top.ani-tabs");
+  const contents = await (0, import_wait_elm.wait)(".ani-tab-content");
   const CONTENT_ID = "baha-anime-skip-content";
   const tab = `
         <div id="cm-settings" class="ani-tabs__item">
@@ -142,7 +225,7 @@ async function add_tab() {
 <!-- \u5982\u6709\u88DC\u5145\u8CC7\u6599\uFF0C\u8ACB\u88DC\u5145\u65BC\u6B64\u884C\u4E4B\u4E0B -->
 `;
   const content = `
-        <div class="ani-tab-content__item" id="${CONTENT_ID}" style="display: none">
+        <div class="ani-tab-content__item" id="${CONTENT_ID}" style="display: none; overflow: hidden auto; height: 100%">
             <div class="ani-setting-section">
                 <h4 class="ani-setting-title">Skip</h4>
                 <div class="ani-setting-item ani-flex">
@@ -210,13 +293,14 @@ async function add_tab() {
             </div>
         </div>
     `;
-  const content_elm = document.createElement("div");
-  content_elm.style.overflow = "hidden auto";
-  content_elm.style.height = "100%";
-  content_elm.innerHTML = content;
-  contents.appendChild(content_elm);
+  const dummy = document.createElement("div");
+  dummy.innerHTML = content;
+  const elm = dummy.firstElementChild;
+  if (elm) {
+    contents.appendChild(elm);
+  }
   if (config.get("cache") === "1") {
-    (_c = document.getElementById("bas-use-cache")) == null ? void 0 : _c.setAttribute("checked", "");
+    (_c = document.querySelector("#bas-use-cache")) == null ? void 0 : _c.setAttribute("checked", "");
   }
   (_d = document.querySelector("#bas-use-cache")) == null ? void 0 : _d.addEventListener("change", (e) => {
     config.set("cache", e.target.checked ? "1" : "0");
@@ -225,7 +309,7 @@ async function add_tab() {
     }
   });
   if (config.get("prefetch") === "1") {
-    (_e = document.getElementById("bas-use-prefetch")) == null ? void 0 : _e.setAttribute("checked", "");
+    (_e = document.querySelector("#bas-use-prefetch")) == null ? void 0 : _e.setAttribute("checked", "");
   }
   (_f = document.querySelector("#bas-use-prefetch")) == null ? void 0 : _f.addEventListener("change", (e) => {
     config.set("prefetch", e.target.checked ? "1" : "0");
@@ -284,7 +368,7 @@ function create_button() {
   });
   async function attach() {
     await add_tab();
-    const target = await wait("video");
+    const target = await (0, import_wait_elm2.wait)("video");
     if (!target) {
       throw new Error("Cannot find video element");
     }
