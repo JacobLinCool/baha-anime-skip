@@ -15,6 +15,7 @@ program
     .option("-l, --lower <lower>", "lower bound", Number, 60)
     .option("-u, --upper <upper>", "upper bound", Number, 100)
     .option("-b, --before <seconds>", "before seconds", Number, 8 * 60)
+    .option("-a, --after <seconds>", "after seconds", Number, 0 * 60)
     .option("-t, --tolerance <seconds>", "block tolerance seconds", Number, 0.4)
     .option("-c, --concurrency <concurrency>", "concurrency", Number, os.cpus().length)
     .option("-s, --simple", "simple mode")

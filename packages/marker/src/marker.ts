@@ -15,6 +15,7 @@ program
     .option("-l, --lower <lower>", "lower bound", Number, 75)
     .option("-u, --upper <upper>", "upper bound", Number, 95)
     .option("-b, --before <seconds>", "before seconds", Number, 6 * 60)
+    .option("-a, --after <seconds>", "after seconds", Number, 0 * 60)
     .option("-c, --concurrency <concurrency>", "concurrency", Number, os.cpus().length)
     .option("-k, --keep", "do not cleanup")
     .option("-w, --write", "write to file")

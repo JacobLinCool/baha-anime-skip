@@ -12,6 +12,7 @@ export async function helper(
         lower = 60,
         upper = 100,
         before = 8 * 60,
+        after = 0 * 60,
         tolerance = 0.4,
         concurrency = os.cpus().length,
         simple = false,
@@ -23,6 +24,7 @@ export async function helper(
         lower?: number;
         upper?: number;
         before?: number;
+        after?: number;
         tolerance?: number;
         concurrency?: number;
         simple?: boolean;
@@ -54,7 +56,7 @@ export async function helper(
         .map((file) => fs.readFileSync(path.join(temp, file)))
         .map((buffer) =>
             partition(buffer, { pool, lower, upper })
-                .filter((b) => b.start < before)
+                .filter((b) => b.start < before && b.end > after)
                 .map((b) => {
                     b.duration = +b.duration.toFixed(2);
                     return b;

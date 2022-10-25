@@ -4,27 +4,8 @@ import os from "node:os";
 import { exec } from "node:child_process";
 import { DetailCrawler, RateLimiter, AnimeDetailInfo } from "baha-anime-crawler";
 import { partition } from "lcsb";
-import { MultiTerm, Term } from "multi-term";
-import update from "log-update";
-
-export const multi_term = new MultiTerm(3, process.stdout.columns - 2);
-process.stdout.on("resize", () => {
-    multi_term.width = process.stdout.columns - 2;
-});
-
-let lazy_update: null | NodeJS.Timeout = null;
-multi_term.on("stdout", () => {
-    if (lazy_update) {
-        return;
-    }
-
-    lazy_update = setTimeout(() => {
-        lazy_update = null;
-        update(multi_term.mixed);
-    }, 500);
-});
-export const main_term = new Term("Console");
-multi_term.add(main_term);
+import { Term } from "multi-term";
+import { multi_term, console_term } from "./term";
 
 export async function marker(
     sn: string[],
@@ -33,17 +14,21 @@ export async function marker(
         lower = 75,
         upper = 95,
         before = 6 * 60,
+        after = 0 * 60,
         concurrency = os.cpus().length,
         keep = false,
         ref = false,
+        raise = false,
     }: {
         ref?: boolean;
         pool?: number;
         lower?: number;
         upper?: number;
         before?: number;
+        after?: number;
         concurrency?: number;
         keep?: boolean;
+        raise?: boolean;
     } = {},
 ): Promise<Record<string, Record<string, [number, number]>>> {
     if (sn.length === 0) {
@@ -56,15 +41,22 @@ export async function marker(
     const limiter = new RateLimiter({ concurrent: concurrency });
 
     const temp = path.join(os.tmpdir(), "waves-tmp");
+    if (!fs.existsSync(temp)) {
+        fs.mkdirSync(temp, { recursive: true });
+    }
 
     await Promise.all(
         sn_list.map(async (sn) => {
             await limiter.lock();
             try {
                 await download(sn, temp, keep);
-            } finally {
+            } catch {
                 limiter.unlock();
+                if (raise) {
+                    throw new Error("Failed to download");
+                }
             }
+            limiter.unlock();
         }),
     );
 
@@ -74,7 +66,7 @@ export async function marker(
         .map((file) => fs.readFileSync(path.join(temp, file)))
         .map((buffer) =>
             partition(buffer, { pool, lower, upper })
-                .filter((b) => b.start < before)
+                .filter((b) => b.start < before && b.end > after)
                 .map((b) => {
                     b.duration = +b.duration.toFixed(2);
                     return b;
@@ -82,12 +74,12 @@ export async function marker(
         );
 
     for (let i = 0; i < blocks.length; i++) {
-        main_term.stdout.write(`${availables[i]} ${JSON.stringify(blocks[i])}\n`);
+        console_term.stdout.write(`${availables[i]} ${JSON.stringify(blocks[i])}\n`);
     }
 
     const result = availables.reduce((dict, sn, idx) => {
         const block = blocks[idx].find(
-            (b) => b.start < before && b.duration >= lower && b.duration <= upper,
+            (b) => b.start < before && b.end > after && b.duration >= lower && b.duration <= upper,
         );
         if (block) {
             dict[sn] = {
@@ -97,9 +89,8 @@ export async function marker(
         return dict;
     }, {} as Record<string, Record<string, [number, number]>>);
 
-    if (!keep) {
-        fs.rmSync(temp, { recursive: true });
-    }
+    waves.forEach((wav) => (keep ? null : fs.rmSync(path.join(temp, wav), { recursive: true })));
+
     return result;
 }
 

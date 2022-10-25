@@ -2,7 +2,8 @@ import fs from "node:fs";
 import os from "node:os";
 import ora from "ora";
 import { ListCrawler, DetailCrawler, RateLimiter } from "baha-anime-crawler";
-import { main_term, marker } from ".";
+import { marker } from ".";
+import { console_term } from "./term";
 
 const FILE = "../baha-anime-skip-db/data.json";
 const CACHE = "ignore.cache";
@@ -33,7 +34,7 @@ async function main() {
         tasks.push(
             (async () => {
                 await limiter.lock();
-                main_term.stdout.write(`${item.sn}\n`);
+                console_term.stdout.write(`${item.sn}\n`);
 
                 try {
                     for (const pool of pools) {
@@ -52,7 +53,7 @@ async function main() {
                             continue;
                         }
 
-                        main_term.stdout.write(`${item.sn} ${JSON.stringify(results)}\n`);
+                        console_term.stdout.write(`${item.sn} ${JSON.stringify(results)}\n`);
 
                         Object.assign(original, results);
 
@@ -64,7 +65,7 @@ async function main() {
                         break;
                     }
                 } catch (err) {
-                    main_term.stderr.write(`${(err as Error).toString()}\n`);
+                    console_term.stderr.write(`${(err as Error).toString()}\n`);
                 }
 
                 limiter.unlock();
@@ -92,7 +93,7 @@ async function create_index(): Promise<{ sn: string }[]> {
 
         spinner.text = "Fetching details";
         const detail_crawler = new DetailCrawler(
-            list.filter((item) => !item.r18 && !item.premium && item.date.year >= 2020),
+            list.filter((item) => !item.r18 && !item.premium && item.date.year === 2015),
         );
         detail_crawler.on("progress", (current, total) => {
             spinner.text = `Fetching details: ${current} / ${total}`;
