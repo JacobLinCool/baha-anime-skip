@@ -7,8 +7,9 @@
     "author": "JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)",
     "license": "MIT",
     "scripts": {
-        "start": "tsx src/marker.ts",
-        "recent": "tsx src/app.ts recent"
+        "start": "tsx src/app.ts",
+        "recent": "tsx src/app.ts recent",
+        "rolling": "tsx src/app.ts rolling"
     },
     "dependencies": {
         "baha-anime-crawler": "^0.1.1",
