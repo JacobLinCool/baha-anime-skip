@@ -19,7 +19,6 @@
         "docs": "pnpm -r run docs",
         "format": "prettier --write '**/*.{js,ts,jsx,tsx,json,yml,yaml,md,html}' --ignore-path .gitignore",
         "lint": "eslint .",
-        "helper": "pnpm -r --filter=helper run start",
         "recent": "pnpm -r run recent && pnpm test",
         "fast-up": "git pull && pnpm recent && pnpm test && git commit packages/baha-anime-skip-db/data.json -m 'feat(db): auto-detected OPs' && git push"
     },
