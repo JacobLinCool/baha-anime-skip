@@ -7,4 +7,5 @@ export interface Options {
     concurrency: number;
     keep: boolean;
     name: string;
+    last: boolean;
 }

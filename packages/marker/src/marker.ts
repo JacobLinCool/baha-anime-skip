@@ -20,6 +20,7 @@ export async function marker(
         ref = false,
         raise = false,
         chapter = "OP",
+        priority = 1,
     }: {
         ref?: boolean;
         pool?: number;
@@ -31,6 +32,7 @@ export async function marker(
         keep?: boolean;
         raise?: boolean;
         chapter?: string;
+        priority?: 1 | 2;
     } = {},
 ): Promise<Record<string, Record<string, [number, number]>>> {
     if (sn.length === 0) {
@@ -80,6 +82,10 @@ export async function marker(
     }
 
     const result = availables.reduce((dict, sn, idx) => {
+        if (priority === 2) {
+            blocks.reverse();
+        }
+
         const block = blocks[idx].find(
             (b) => b.start < before && b.end > after && b.duration >= lower && b.duration <= upper,
         );

@@ -15,6 +15,7 @@ const defaults = {
     concurrency: os.cpus().length,
     keep: false,
     name: "OP",
+    last: false,
 };
 
 program
@@ -24,7 +25,8 @@ program
     .option("-r, --range <from,to>", "range", defaults.range)
     .option("-c, --concurrency <concurrency>", "concurrency", Number, defaults.concurrency)
     .option("-k, --keep", "do not cleanup", defaults.keep)
-    .option("-n, --name <name>", "chapter name", defaults.name);
+    .option("-n, --name <name>", "chapter name", defaults.name)
+    .option("--last", "use last-first strategy");
 
 program.command("recent").action(async () => {
     const opt = parse_options(program.opts());
@@ -56,7 +58,7 @@ program.parse();
 function parse_options(opt: typeof defaults): Options {
     const pool = opt.pool.split(",").map((x) => Number(x));
     const [from, to] = opt.range.split(",").map((x) => Number(x));
-    const { lower, upper, concurrency, keep, name } = opt;
+    const { lower, upper, concurrency, keep, name, last } = opt;
 
-    return { pool, from, to, lower, upper, concurrency, keep, name };
+    return { pool, from, to, lower, upper, concurrency, keep, name, last };
 }

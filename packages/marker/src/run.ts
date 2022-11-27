@@ -29,6 +29,7 @@ export async function run(items: { sn: string }[], opt: Options): Promise<void> 
                             keep: true,
                             raise: true,
                             chapter: opt.name,
+                            priority: opt.last ? 2 : 1,
                         });
 
                         if (!results[item.sn] || Object.keys(results[item.sn]).length === 0) {
