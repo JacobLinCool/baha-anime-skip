@@ -53,6 +53,18 @@ program
         await run(items, opt);
     });
 
+program.command("single <sn>").action(async (sn: string) => {
+    const opt = parse_options(program.opts());
+    console_term.stdout.write(JSON.stringify(opt) + "\n");
+
+    const list = [{ sn }];
+    if (data[sn]?.[opt.name]) {
+        console_term.stdout.write(`skip ${sn} ${opt.name}`);
+        return;
+    }
+    await run(list, opt);
+});
+
 program.parse();
 
 function parse_options(opt: typeof defaults): Options {
