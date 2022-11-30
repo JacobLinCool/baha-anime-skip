@@ -8,7 +8,7 @@
     "license": "MIT",
     "scripts": {
         "start": "tsx src/app.ts",
-        "recent": "tsx src/app.ts recent",
+        "recent": "tsx src/app.ts -k recent && tsx src/app.ts -l 80 -u 100 -r 1200,1800 -n ED --last recent",
         "rolling": "tsx src/app.ts rolling"
     },
     "dependencies": {
