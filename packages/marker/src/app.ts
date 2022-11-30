@@ -3,7 +3,7 @@ import { program } from "commander";
 import { console_term } from "./term";
 import { Options } from "./types";
 import { no_matched_cache } from "./cache";
-import { create_recent_list, create_rolling_list } from "./list";
+import { create_recent_list, create_rolling_list, create_series_list } from "./list";
 import { run } from "./run";
 import { data } from "./data";
 
@@ -42,11 +42,13 @@ program.command("recent").action(async () => {
 program
     .command("rolling")
     .option("-y, --year <year>", "rolling year", Number, new Date().getFullYear())
-    .action(async ({ year }: { year: number }) => {
+    .option("-m, --month <month>", "rolling month", Number, new Date().getMonth() + 1)
+    .option("--limit <limit>", "rolling limit", Number, 12 * 100)
+    .action(async ({ year, month, limit }: { year: number; month: number; limit: number }) => {
         const opt = parse_options(program.opts());
         console_term.stdout.write(JSON.stringify(opt) + "\n");
 
-        const list = await create_rolling_list(year);
+        const list = await create_rolling_list(year, month, limit);
         const items = list.filter(
             (item) => !data[item.sn]?.[opt.name] && !no_matched_cache[opt.name]?.includes(item.sn),
         );
@@ -63,6 +65,18 @@ program.command("single <sn>").action(async (sn: string) => {
         return;
     }
     await run(list, opt);
+});
+
+program.command("series <sn>").action(async (sn: string) => {
+    const opt = parse_options(program.opts());
+    console_term.stdout.write(JSON.stringify(opt) + "\n");
+
+    const list = await create_series_list(sn);
+    const items = list.filter(
+        (item) => !data[item.sn]?.[opt.name] && !no_matched_cache[opt.name]?.includes(item.sn),
+    );
+
+    await run(items, opt);
 });
 
 program.parse();

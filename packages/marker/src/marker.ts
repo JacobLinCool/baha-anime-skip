@@ -124,6 +124,8 @@ async function download(sn: number, dir: string, keep: boolean) {
     if (!fs.existsSync(mp4)) {
         const dl_cmd = `docker run --rm -v ${tmp}:/app/bangumi jacoblincool/anigamerplus -s ${sn} -r 360 -n`;
         const dl_process = exec(dl_cmd);
+        const kill = () => dl_process.kill();
+        process.on("SIGINT", kill);
 
         const term = new Term(`Downloading ${sn}`);
         multi_term.add(term);
@@ -131,6 +133,7 @@ async function download(sn: number, dir: string, keep: boolean) {
         await new Promise((resolve) => {
             dl_process.on("exit", () => {
                 multi_term.remove(term);
+                process.off("SIGINT", kill);
                 resolve(null);
             });
             dl_process.stdout?.pipe(term.stdout);

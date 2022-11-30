@@ -73,6 +73,7 @@ importers:
     specifiers:
       '@types/node-fetch': ^2.6.2
       baha-anime-crawler: ^0.1.1
+      bahamut-anime: ^1.1.0
       commander: ^9.4.1
       file-mapping: ^0.2.1
       lcsb: ^0.1.3
@@ -83,6 +84,7 @@ importers:
       tsx: ^3.11.0
     dependencies:
       baha-anime-crawler: 0.1.1
+      bahamut-anime: 1.1.0
       commander: 9.4.1
       file-mapping: 0.2.1
       lcsb: 0.1.3
@@ -1216,6 +1218,14 @@ packages:
       ora: 6.1.2
     dev: false
 
+  /bahamut-anime/1.1.0:
+    resolution: {integrity: sha512-8pu0Q+RQdrVfzD+G+lFbJVU7R/4j1nj38hg8dvwJTADZ+LLqk/qJGUm8DNhCVkUU957ix1b2yH9rzYb/x5BzRw==}
+    dependencies:
+      cross-fetch: 3.1.5
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /balanced-match/1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
@@ -1512,6 +1522,14 @@ packages:
     dependencies:
       safe-buffer: 5.1.2
     dev: true
+
+  /cross-fetch/3.1.5:
+    resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
+    dependencies:
+      node-fetch: 2.6.7
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
