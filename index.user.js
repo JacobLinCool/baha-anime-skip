@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Baha Anime Skip
-// @version      0.1.9
+// @version      0.2.0
 // @description  Skip OP or other things on Bahamut Anime.
 // @author       JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)
 // @license      MIT
@@ -118,14 +118,26 @@ var import_wait_elm2 = __toESM(require_lib(), 1);
 var PREFIX = "bas-";
 var config = {
   get(key) {
-    return localStorage.getItem(PREFIX + key);
+    try {
+      return JSON.parse(localStorage.getItem(PREFIX + key) || "");
+    } catch {
+      return localStorage.getItem(PREFIX + key);
+    }
   },
   set(key, value) {
-    localStorage.setItem(PREFIX + key, value);
+    if (typeof value === "string") {
+      localStorage.setItem(PREFIX + key, value);
+    } else {
+      localStorage.setItem(PREFIX + key, JSON.stringify(value));
+    }
   }
 };
-if (config.get("endpoint") === null) {
-  config.set("endpoint", "https://jacoblincool.github.io/baha-anime-skip/");
+if (config.get("endpoints") === null) {
+  config.set("endpoints", [
+    "https://jacoblin.cool/baha-anime-skip/",
+    "https://jacoblincool.github.io/baha-anime-skip/",
+    "https://raw.githubusercontent.com/JacobLinCool/baha-anime-skip/data/"
+  ]);
 }
 
 // src/utils.ts
@@ -140,13 +152,21 @@ async function get_data(sn) {
   if (config.get("cache") === "1" && config.get(`cache-${sn}`)) {
     return JSON.parse(config.get(`cache-${sn}`));
   }
-  const url = `${config.get("endpoint")}${sn}.json`;
-  const res = await fetch(url);
-  const data = await res.json();
-  if (config.get("cache") === "1") {
-    config.set(`cache-${sn}`, JSON.stringify(data));
+  const endpoints = config.get("endpoints");
+  for (const endpoint of endpoints) {
+    try {
+      const url = `${endpoint}${sn}.json`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (config.get("cache") === "1") {
+        config.set(`cache-${sn}`, JSON.stringify(data));
+      }
+      return data;
+    } catch (err) {
+      debug(`[Not Found] ${err}`);
+    }
   }
-  return data;
+  throw new Error("All endpoints do not have this data.");
 }
 
 // src/prefetch.ts
@@ -224,6 +244,7 @@ async function add_tab() {
 # \u88DC\u5145\u8CC7\u6599
 <!-- \u5982\u6709\u88DC\u5145\u8CC7\u6599\uFF0C\u8ACB\u88DC\u5145\u65BC\u6B64\u884C\u4E4B\u4E0B -->
 `;
+  const endpoints = config.get("endpoints");
   const content = `
         <div class="ani-tab-content__item" id="${CONTENT_ID}" style="display: none; overflow: hidden auto; height: 100%">
             <div class="ani-setting-section">
@@ -273,9 +294,7 @@ async function add_tab() {
                     </div>
                 </div>
                 <div style="display: flex; margin: 0 16px">
-                    <input type="text" id="bas-endpoint" class="ani-input ani-input--keyword" placeholder="https://..." value="${config.get(
-    "endpoint"
-  )}">
+                    <input type="text" id="bas-endpoint" class="ani-input ani-input--keyword" placeholder="https://1.end/,https://2.end/,..." value="${endpoints.join()}">
                     <a
                         id="bas-endpoint-save"
                         href="#" 
@@ -316,11 +335,12 @@ async function add_tab() {
   });
   (_g = document.querySelector("#bas-endpoint-save")) == null ? void 0 : _g.addEventListener("click", (e) => {
     var _a2;
-    const endpoint = (_a2 = document.querySelector("#bas-endpoint")) == null ? void 0 : _a2.value;
-    const old = config.get("endpoint");
-    if (endpoint && endpoint !== old) {
-      config.set("endpoint", endpoint);
-      debug(`Endpoint changed from ${old} to ${endpoint}`);
+    const content2 = (_a2 = document.querySelector("#bas-endpoint")) == null ? void 0 : _a2.value;
+    const new_endpoints = (content2 == null ? void 0 : content2.split(",").map((e2) => e2.trim()).filter((e2) => e2.length > 0)) ?? [];
+    const old_endpoints = config.get("endpoints");
+    if (new_endpoints.length && new_endpoints.join() !== old_endpoints.join()) {
+      config.set("endpoints", new_endpoints);
+      debug(`Endpoint changed from ${old_endpoints} to ${new_endpoints}`);
     }
     e.preventDefault();
   });
