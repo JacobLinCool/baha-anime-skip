@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Baha Anime Skip
-// @version      0.2.0
+// @version      0.2.1
 // @description  Skip OP or other things on Bahamut Anime.
 // @author       JacobLinCool <jacoblincool@gmail.com> (https://github.com/JacobLinCool)
 // @license      MIT
@@ -432,6 +432,7 @@ function create_button() {
       if (curr_event === null && prev_event !== null) {
         debug(`Leaving ${prev_event.chapter}`);
         button.style.opacity = "0";
+        button.style.pointerEvents = "none";
         button.onclick = none();
         button.oncontextmenu = none("Context menu");
         prev_event = null;
@@ -440,6 +441,7 @@ function create_button() {
         const event = curr_event;
         debug(`Entering ${event.chapter}`);
         button.style.opacity = "0.85";
+        button.style.pointerEvents = "auto";
         button.innerHTML = `Skip ${event.chapter}`;
         button.onclick = () => {
           target.currentTime = event.end;
@@ -451,6 +453,7 @@ function create_button() {
           debug(`Hiding ${event.chapter}`);
           temp_disabled_event = event;
           button.style.opacity = "0";
+          button.style.pointerEvents = "none";
           button.onclick = none();
           button.oncontextmenu = none("Context menu");
         };
