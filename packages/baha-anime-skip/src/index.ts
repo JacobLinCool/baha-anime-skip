@@ -79,6 +79,7 @@ import { Event } from "./types";
             if (curr_event === null && prev_event !== null) {
                 debug(`Leaving ${prev_event.chapter}`);
                 button.style.opacity = "0";
+                button.style.pointerEvents = "none";
                 button.onclick = none();
                 button.oncontextmenu = none("Context menu");
                 prev_event = null;
@@ -92,6 +93,7 @@ import { Event } from "./types";
                 debug(`Entering ${event.chapter}`);
 
                 button.style.opacity = "0.85";
+                button.style.pointerEvents = "auto";
                 button.innerHTML = `Skip ${event.chapter}`;
 
                 button.onclick = () => {
@@ -105,6 +107,7 @@ import { Event } from "./types";
                     debug(`Hiding ${event.chapter}`);
                     temp_disabled_event = event;
                     button.style.opacity = "0";
+                    button.style.pointerEvents = "none";
                     button.onclick = none();
                     button.oncontextmenu = none("Context menu");
                 };
