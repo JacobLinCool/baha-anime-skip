@@ -17,7 +17,7 @@
         "baha-anime-dl": "^0.0.1",
         "baha-anime-dl-ext": "^0.0.1",
         "bahamut-anime": "^1.1.0",
-        "commander": "^10.0.0",
+        "commander": "^11.0.0",
         "debug": "^4.3.4",
         "file-mapping": "^0.2.1",
         "lcsb": "^0.1.3",
