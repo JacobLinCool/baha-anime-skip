@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import { RateLimiter } from "baha-anime-crawler";
-import { console_term } from "./term";
 import { marker } from "./marker";
 import { Options } from "./types";
 import { failed_cache, no_matched_cache } from "./cache";
@@ -16,7 +15,7 @@ export async function run(items: { sn: string }[], opt: Options): Promise<void> 
         tasks.push(
             (async () => {
                 await limiter.lock();
-                console_term.stdout.write(`${item.sn}\n`);
+                console.log(`start ${item.sn} ${opt.name}`);
 
                 try {
                     for (const pool of opt.pool) {
@@ -42,7 +41,7 @@ export async function run(items: { sn: string }[], opt: Options): Promise<void> 
                             continue;
                         }
 
-                        console_term.stdout.write(`${item.sn} ${JSON.stringify(results)}\n`);
+                        console.log(`${item.sn} ${JSON.stringify(results)}`);
 
                         for (const [name, result] of Object.entries(results[item.sn])) {
                             if (!data[item.sn]) {
@@ -73,7 +72,7 @@ export async function run(items: { sn: string }[], opt: Options): Promise<void> 
                         failed_cache[opt.name] = [];
                     }
                     failed_cache[opt.name].push(item.sn);
-                    console_term.stderr.write(`${(err as Error).toString()}\n`);
+                    console.error((err as Error).toString());
                 }
 
                 limiter.unlock();
