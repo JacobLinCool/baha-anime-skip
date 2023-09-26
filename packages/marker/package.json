@@ -22,7 +22,7 @@
         "file-mapping": "^0.2.1",
         "lcsb": "^0.1.3",
         "log-update": "^4.0.0",
-        "node-fetch": "^2.6.7",
+        "node-fetch": "^3.0.0",
         "ora": "^5.4.1"
     },
     "devDependencies": {
