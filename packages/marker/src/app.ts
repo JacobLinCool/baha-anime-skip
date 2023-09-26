@@ -1,6 +1,5 @@
 import os from "node:os";
 import { program } from "commander";
-import { console_term } from "./term";
 import { Options } from "./types";
 import { no_matched_cache } from "./cache";
 import { create_recent_list, create_rolling_list, create_series_list } from "./list";
@@ -30,7 +29,7 @@ program
 
 program.command("recent").action(async () => {
     const opt = parse_options(program.opts());
-    console_term.stdout.write(JSON.stringify(opt) + "\n");
+    console.log(JSON.stringify(opt));
 
     const list = await create_recent_list();
     const items = list.filter(
@@ -46,7 +45,7 @@ program
     .option("--limit <limit>", "rolling limit", Number, 12 * 100)
     .action(async ({ year, month, limit }: { year: number; month: number; limit: number }) => {
         const opt = parse_options(program.opts());
-        console_term.stdout.write(JSON.stringify(opt) + "\n");
+        console.log(JSON.stringify(opt));
 
         const list = await create_rolling_list(year, month, limit);
         const items = list.filter(
@@ -57,11 +56,11 @@ program
 
 program.command("single <sn>").action(async (sn: string) => {
     const opt = parse_options(program.opts());
-    console_term.stdout.write(JSON.stringify(opt) + "\n");
+    console.log(JSON.stringify(opt));
 
     const list = [{ sn }];
     if (data[sn]?.[opt.name]) {
-        console_term.stdout.write(`skip ${sn} ${opt.name}`);
+        console.log(`skip ${sn} ${opt.name}`);
         return;
     }
     await run(list, opt);
@@ -69,7 +68,7 @@ program.command("single <sn>").action(async (sn: string) => {
 
 program.command("series <sn>").action(async (sn: string) => {
     const opt = parse_options(program.opts());
-    console_term.stdout.write(JSON.stringify(opt) + "\n");
+    console.log(JSON.stringify(opt));
 
     const list = await create_series_list(sn);
     const items = list.filter(

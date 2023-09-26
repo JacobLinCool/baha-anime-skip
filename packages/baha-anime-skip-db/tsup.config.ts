@@ -8,5 +8,6 @@ export default defineConfig((options) => ({
     shims: true,
     clean: true,
     splitting: false,
+    dts: true,
     minify: !options.watch,
 }));
