@@ -14,8 +14,8 @@
     },
     "dependencies": {
         "baha-anime-crawler": "^0.1.1",
-        "baha-anime-dl": "^0.0.1",
-        "baha-anime-dl-ext": "^0.0.1",
+        "baha-anime-dl": "^0.0.3",
+        "baha-anime-dl-ext": "^0.0.3",
         "bahamut-anime": "^1.1.0",
         "commander": "^10.0.0",
         "debug": "^4.3.4",

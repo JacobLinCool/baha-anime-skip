@@ -127,7 +127,7 @@ async function download(sn: number, dir: string, keep: boolean) {
     if (!fs.existsSync(mp4)) {
         const downloader = new Downloader({
             ...default_config(),
-            concurrency: 4
+            concurrency: 2
         });
         await downloader.init();
 
