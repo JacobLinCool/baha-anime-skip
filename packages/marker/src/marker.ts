@@ -1,12 +1,12 @@
-import fs from "node:fs";
-import path from "node:path";
-import os from "node:os";
-import { exec } from "node:child_process";
-import { DetailCrawler, RateLimiter, AnimeDetailInfo } from "baha-anime-crawler";
-import { partition } from "lcsb";
+import { AnimeDetailInfo, DetailCrawler, RateLimiter } from "baha-anime-crawler";
 import { Downloader, default_config } from "baha-anime-dl";
 import { merge } from "baha-anime-dl-ext";
 import debug from "debug";
+import { partition } from "lcsb";
+import { exec } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 
 debug.enable("baha-anime-dl*");
 
@@ -84,21 +84,25 @@ export async function marker(
         console.log(`${availables[i]} ${JSON.stringify(blocks[i])}`);
     }
 
-    const result = availables.reduce((dict, sn, idx) => {
-        if (priority === 2) {
-            blocks.reverse();
-        }
+    const result = availables.reduce(
+        (dict, sn, idx) => {
+            if (priority === 2) {
+                blocks.reverse();
+            }
 
-        const block = blocks[idx].find(
-            (b) => b.start < before && b.end > after && b.duration >= lower && b.duration <= upper,
-        );
-        if (block) {
-            dict[sn] = {
-                [chapter]: [+block.start.toFixed(2), +block.duration.toFixed(2)],
-            };
-        }
-        return dict;
-    }, {} as Record<string, Record<string, [number, number]>>);
+            const block = blocks[idx].find(
+                (b) =>
+                    b.start < before && b.end > after && b.duration >= lower && b.duration <= upper,
+            );
+            if (block) {
+                dict[sn] = {
+                    [chapter]: [+block.start.toFixed(2), +block.duration.toFixed(2)],
+                };
+            }
+            return dict;
+        },
+        {} as Record<string, Record<string, [number, number]>>,
+    );
 
     waves.forEach((wav) => (keep ? null : fs.rmSync(path.join(temp, wav), { recursive: true })));
 
@@ -127,7 +131,7 @@ async function download(sn: number, dir: string, keep: boolean) {
     if (!fs.existsSync(mp4)) {
         const downloader = new Downloader({
             ...default_config(),
-            concurrency: 2
+            concurrency: 2,
         });
         await downloader.init();
 

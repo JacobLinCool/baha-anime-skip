@@ -1,10 +1,10 @@
 import { wait } from "wait-elm";
-import { prefetch_all, prefetch_check, prefetch_ui } from "./prefetch";
-import { config } from "./config";
-import { add_tab } from "./tab";
 import { button } from "./button";
-import { debug, get_data } from "./utils";
+import { config } from "./config";
+import { prefetch_all, prefetch_check, prefetch_ui } from "./prefetch";
+import { add_tab } from "./tab";
 import { Event } from "./types";
+import { debug, get_data } from "./utils";
 
 (async () => {
     attach()

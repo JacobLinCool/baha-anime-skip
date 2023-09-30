@@ -9,3 +9,6 @@ overrides:
   - files: "*.{md,yml,yaml}"
     options:
       tabWidth: 2
+
+plugins:
+  - prettier-plugin-organize-imports
