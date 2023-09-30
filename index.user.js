@@ -32,6 +32,10 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
@@ -113,6 +117,34 @@ var require_lib = __commonJS({
 
 // src/index.ts
 var import_wait_elm2 = __toESM(require_lib(), 1);
+
+// src/button.ts
+var button = create_button();
+function create_button() {
+  const button2 = document.createElement("button");
+  Object.assign(button2.style, {
+    opacity: "0",
+    transition: "opacity 0.3s",
+    position: "absolute",
+    bottom: "50px",
+    right: "0px",
+    margin: "20px",
+    width: "120px",
+    height: "40px",
+    border: "1px solid lightgray",
+    borderRadius: "4px",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    color: "white",
+    fontSize: "16px",
+    zIndex: "9",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    pointerEvents: "auto",
+    overflow: "hidden"
+  });
+  return button2;
+}
 
 // src/config.ts
 var PREFIX = "bas-";
@@ -235,7 +267,9 @@ async function add_tab() {
     }
     e.preventDefault();
   });
-  const issue_title = `[\u8CC7\u6599\u932F\u8AA4\u6216\u907A\u5931] ${(_b = document.title.match(/(.+?\[.+?\])/)) == null ? void 0 : _b[1]} (${new URLSearchParams(location.search).get("sn")})`;
+  const issue_title = `[\u8CC7\u6599\u932F\u8AA4\u6216\u907A\u5931] ${(_b = document.title.match(
+    /(.+?\[.+?\])/
+  )) == null ? void 0 : _b[1]} (${new URLSearchParams(location.search).get("sn")})`;
   const issue_body = `[\u52D5\u756B\u760B\u9023\u7D50](${location.href})
 
 # \u554F\u984C\u63CF\u8FF0
@@ -344,34 +378,6 @@ async function add_tab() {
     }
     e.preventDefault();
   });
-}
-
-// src/button.ts
-var button = create_button();
-function create_button() {
-  const button2 = document.createElement("button");
-  Object.assign(button2.style, {
-    opacity: "0",
-    transition: "opacity 0.3s",
-    position: "absolute",
-    bottom: "50px",
-    right: "0px",
-    margin: "20px",
-    width: "120px",
-    height: "40px",
-    border: "1px solid lightgray",
-    borderRadius: "4px",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    color: "white",
-    fontSize: "16px",
-    zIndex: "9",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    pointerEvents: "auto",
-    overflow: "hidden"
-  });
-  return button2;
 }
 
 // src/index.ts
