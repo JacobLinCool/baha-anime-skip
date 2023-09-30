@@ -1,19 +1,19 @@
-import fs from "node:fs";
-import fetch from "node-fetch";
-import { ListCrawler, DetailCrawler } from "baha-anime-crawler";
+import { DetailCrawler, ListCrawler } from "baha-anime-crawler";
 import { Anime } from "bahamut-anime";
+import fetch from "node-fetch";
+import fs from "node:fs";
 import ora from "ora";
 
 export async function create_recent_list(): Promise<{ sn: string }[]> {
     const INDEX = "https://api.gamer.com.tw/mobile_app/anime/v3/index.php";
 
     const items: { title: string; sn: string; ignore: boolean }[] = await fetch(INDEX)
-        .then((res) => res.json())
+        .then((res) => res.json() as Promise<IndexData>)
         .then((data) =>
-            data.data.newAnime.date.map((item: any) => ({
+            data.data.newAnime.date.map((item) => ({
                 title: item.title,
                 sn: item.videoSn,
-                ignore: item.volume === "電影" || item.highlightTag.vipTime,
+                ignore: item.volume === "電影" || !!item.highlightTag.vipTime,
             })),
         );
 
@@ -72,4 +72,156 @@ export async function create_series_list(sn: string): Promise<{ sn: string }[]> 
     const anime = new Anime(+sn);
     const episodes = Object.values(await anime.episodes()).flat();
     return episodes.map(({ sn }) => ({ sn: sn.toString() }));
+}
+
+export interface IndexData {
+    data: {
+        announce: string;
+        newAnime: NewAnime;
+        newAnimeSchedule: NewAnimeSchedule;
+        aniChannel: AniChannel[];
+        hotAnime: HotAnime[];
+        newAdded: NewAdded[];
+        category: Category[];
+        gnnList: GnnList[];
+        forumList: ForumList[];
+        ad: unknown[];
+        lastAniUpTime: number;
+    };
+}
+
+export interface NewAnime {
+    date: Date[];
+    popular: Popular[];
+}
+
+export interface Date {
+    acgSn: string;
+    videoSn: string;
+    animeSn: string;
+    title: string;
+    dcC1: string;
+    dcC2: string;
+    week: string;
+    favorite: boolean;
+    cover: string;
+    upTime: string;
+    upTimeHours: string;
+    volume: string;
+    popular: string;
+    highlightTag: HighlightTag;
+}
+
+export interface HighlightTag {
+    bilingual: boolean;
+    edition: string;
+    vipTime: string;
+}
+
+export interface Popular {
+    acgSn: string;
+    videoSn: string;
+    animeSn: string;
+    title: string;
+    dcC1: string;
+    dcC2: string;
+    week: string;
+    favorite: boolean;
+    cover: string;
+    upTime: string;
+    upTimeHours: string;
+    volume: string;
+    popular: string;
+    highlightTag: HighlightTag;
+}
+
+export interface NewAnimeSchedule {
+    "1": DailySchedule[];
+    "2": DailySchedule[];
+    "3": DailySchedule[];
+    "4": DailySchedule[];
+    "5": DailySchedule[];
+    "6": DailySchedule[];
+    "7": DailySchedule[];
+}
+
+export interface DailySchedule {
+    videoSn: string;
+    title: string;
+    scheduleTime: string;
+    volumeString: string;
+}
+
+export interface AniChannel {
+    title: string;
+    status: number;
+    uploadTime: string;
+    img: string;
+}
+
+export interface HotAnime {
+    acgSn: string;
+    animeSn: string;
+    title: string;
+    dcC1: string;
+    dcC2: string;
+    favorite: boolean;
+    flag: string;
+    cover: string;
+    info: string;
+    popular: string;
+    highlightTag: HighlightTag;
+}
+
+export interface HighlightTag {
+    bilingual: boolean;
+    edition: string;
+    vipTime: string;
+}
+
+export interface NewAdded {
+    acgSn: string;
+    animeSn: string;
+    title: string;
+    dcC1: string;
+    dcC2: string;
+    favorite: boolean;
+    flag: string;
+    cover: string;
+    info: string;
+    popular: string;
+    highlightTag: HighlightTag;
+}
+
+export interface Category {
+    title: string;
+    intro: string;
+    list: List[];
+}
+
+export interface List {
+    acgSn: string;
+    animeSn: string;
+    videoSn: string;
+    title: string;
+    dcC1: string;
+    dcC2: string;
+    favorite: boolean;
+    flag: string;
+    cover: string;
+    info: string;
+    popular: string;
+    highlightTag: HighlightTag;
+}
+
+export interface GnnList {
+    url: string;
+    title: string;
+    pic: string;
+}
+
+export interface ForumList {
+    url: string;
+    title: string;
+    pic: string;
 }

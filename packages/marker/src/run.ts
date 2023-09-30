@@ -1,9 +1,9 @@
-import fs from "node:fs";
 import { RateLimiter } from "baha-anime-crawler";
+import fs from "node:fs";
+import { failed_cache, no_matched_cache } from "./cache";
+import { FILE, data } from "./data";
 import { marker } from "./marker";
 import { Options } from "./types";
-import { failed_cache, no_matched_cache } from "./cache";
-import { data, FILE } from "./data";
 
 export async function run(items: { sn: string }[], opt: Options): Promise<void> {
     const limiter = new RateLimiter({ concurrent: opt.concurrency });

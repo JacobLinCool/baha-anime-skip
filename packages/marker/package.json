@@ -8,26 +8,28 @@
     "license": "MIT",
     "type": "module",
     "scripts": {
-        "start": "tsx src/app.ts",
-        "recent": "tsx src/app.ts -k recent && tsx src/app.ts -l 80 -u 100 -r 1200,1800 -n ED --last recent",
-        "rolling": "tsx src/app.ts rolling"
+        "build": "tsup src/app.ts --clean --format esm",
+        "start": "node dist/app.js",
+        "recent": "node dist/app.js -k recent && node dist/app.js -l 80 -u 100 -r 1200,1800 -n ED --last recent",
+        "rolling": "node dist/app.js rolling"
     },
     "dependencies": {
         "baha-anime-crawler": "^0.1.1",
         "baha-anime-dl": "^0.0.3",
         "baha-anime-dl-ext": "^0.0.3",
-        "bahamut-anime": "^1.1.0",
-        "commander": "^10.0.0",
+        "bahamut-anime": "^1.2.0",
+        "commander": "^11.0.0",
         "debug": "^4.3.4",
         "file-mapping": "^0.2.1",
         "lcsb": "^0.1.3",
-        "log-update": "^4.0.0",
-        "node-fetch": "^2.6.7",
-        "ora": "^5.4.1"
+        "log-update": "^5.0.1",
+        "node-fetch": "^3.3.2",
+        "ora": "^7.0.1"
     },
     "devDependencies": {
         "@types/debug": "^4.1.9",
-        "@types/node-fetch": "^2.6.2",
-        "tsx": "^3.11.0"
+        "@types/node-fetch": "^2.6.6",
+        "tsup": "^7.2.0",
+        "tsx": "^3.13.0"
     }
 }

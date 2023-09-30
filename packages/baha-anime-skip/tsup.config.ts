@@ -30,7 +30,7 @@ export default defineConfig(() => ({
     banner: () => ({
         js: banner,
     }),
-    outExtension: (ctx) => {
+    outExtension: () => {
         return { js: ".user.js" };
     },
 }));

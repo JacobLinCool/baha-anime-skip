@@ -1,10 +1,10 @@
-import os from "node:os";
 import { program } from "commander";
-import { Options } from "./types";
+import os from "node:os";
 import { no_matched_cache } from "./cache";
+import { data } from "./data";
 import { create_recent_list, create_rolling_list, create_series_list } from "./list";
 import { run } from "./run";
-import { data } from "./data";
+import { Options } from "./types";
 
 const defaults = {
     pool: "1200,2400,4800,9600,19200",
