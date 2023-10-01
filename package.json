@@ -17,7 +17,7 @@
         "test": "pnpm -r run test",
         "build": "pnpm -r run build",
         "docs": "pnpm -r run docs",
-        "format": "prettier --write '**/*.{js,ts,jsx,tsx,json,yml,yaml,md,html}' --ignore-path .gitignore",
+        "format": "prettier --write '**/*.{js,cjs,ts,jsx,tsx,json,yml,yaml,md,html,svelte}' --ignore-path .gitignore",
         "lint": "eslint .",
         "recent": "pnpm -r run recent && pnpm test",
         "fast-up": "git pull && pnpm recent && git commit packages/baha-anime-skip-db/data.json -m 'feat(db): auto-detected OPs' && git push"
@@ -32,6 +32,8 @@
         "jest": "^29.7.0",
         "prettier": "^3.0.3",
         "prettier-plugin-organize-imports": "^3.2.3",
+        "prettier-plugin-svelte": "^3.0.3",
+        "prettier-plugin-tailwindcss": "^0.5.4",
         "ts-jest": "^29.1.1",
         "tsup": "^7.2.0",
         "tsx": "^3.13.0",

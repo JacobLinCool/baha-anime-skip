@@ -11,4 +11,10 @@ overrides:
       tabWidth: 2
 
 plugins:
+  - prettier-plugin-svelte
   - prettier-plugin-organize-imports
+  - prettier-plugin-tailwindcss
+
+organizeImportsSkipDestructiveCodeActions: true
+
+tailwindConfig: packages/baha-anime-skip-ext/tailwind.config.cjs
