@@ -170,11 +170,11 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1
       baha-anime-dl:
-        specifier: ^0.0.3
-        version: 0.0.3
+        specifier: ^0.0.4
+        version: 0.0.4
       baha-anime-dl-ext:
         specifier: ^0.0.3
-        version: 0.0.3(baha-anime-dl@0.0.3)
+        version: 0.0.3(baha-anime-dl@0.0.4)
       bahamut-anime:
         specifier: ^1.2.0
         version: 1.2.0
@@ -1766,12 +1766,12 @@ packages:
       ora: 6.1.2
     dev: false
 
-  /baha-anime-dl-ext@0.0.3(baha-anime-dl@0.0.3):
+  /baha-anime-dl-ext@0.0.3(baha-anime-dl@0.0.4):
     resolution: {integrity: sha512-RqHXgpVaqksosGIGyHdtUg28PMGL1qo8v23hHqirilXzwQmxnFlnzwR+Fd7wuNpBgy/W7mXLp2xFERkiX0GT8Q==}
     peerDependencies:
       baha-anime-dl: 0.0.3
     dependencies:
-      baha-anime-dl: 0.0.3
+      baha-anime-dl: 0.0.4
       cross-fetch: 4.0.0
       debug: 4.3.4
       fetch-cookie: 2.1.0
@@ -1782,8 +1782,8 @@ packages:
       - supports-color
     dev: false
 
-  /baha-anime-dl@0.0.3:
-    resolution: {integrity: sha512-axxetmfbuU2Bm6UW3bX9BGXfE9bv2IjD6ByyG00apltlCPxVVs/8LKlCu3vKPPAyqnQwBQt1XnajuxAMB/NrOg==}
+  /baha-anime-dl@0.0.4:
+    resolution: {integrity: sha512-kvE4274XawrpBINiNylud2d+DkW0sNsSTE4t0SapaGwH1mta8/tNXDl/Pax1UPupF5caL7dmAR5+LZujHYg8YQ==}
     dependencies:
       cross-fetch: 4.0.0
       debug: 4.3.4
