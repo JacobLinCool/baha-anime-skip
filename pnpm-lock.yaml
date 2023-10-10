@@ -173,8 +173,8 @@ importers:
         specifier: ^0.0.3
         version: 0.0.3
       baha-anime-dl-ext:
-        specifier: ^0.0.3
-        version: 0.0.3(baha-anime-dl@0.0.3)
+        specifier: ^0.0.4
+        version: 0.0.4(baha-anime-dl@0.0.3)
       bahamut-anime:
         specifier: ^1.2.0
         version: 1.2.0
@@ -1766,10 +1766,10 @@ packages:
       ora: 6.1.2
     dev: false
 
-  /baha-anime-dl-ext@0.0.3(baha-anime-dl@0.0.3):
-    resolution: {integrity: sha512-RqHXgpVaqksosGIGyHdtUg28PMGL1qo8v23hHqirilXzwQmxnFlnzwR+Fd7wuNpBgy/W7mXLp2xFERkiX0GT8Q==}
+  /baha-anime-dl-ext@0.0.4(baha-anime-dl@0.0.3):
+    resolution: {integrity: sha512-xeFpsGXgOiN53aDjS2t/lNje3SCdIfwVVhF+FecMOd0Wl/5kxBx+nUsA456QuoRm9gLtIuRAH80LAsdu9JxMZg==}
     peerDependencies:
-      baha-anime-dl: 0.0.3
+      baha-anime-dl: 0.0.4
     dependencies:
       baha-anime-dl: 0.0.3
       cross-fetch: 4.0.0
