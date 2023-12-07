@@ -136,6 +136,7 @@ async function download(sn: number, dir: string, keep: boolean) {
         await downloader.init();
 
         const download = downloader.download(sn);
+        download.meta.catch(() => { });
         const merged = await merge(download);
 
         fs.writeFileSync(mp4, Buffer.from(merged));

@@ -111,6 +111,9 @@ importers:
       debug:
         specifier: ^4.3.4
         version: 4.3.4
+      gif.js:
+        specifier: ^0.2.0
+        version: 0.2.0
       wait-elm:
         specifier: ^0.1.0
         version: 0.1.0
@@ -133,6 +136,9 @@ importers:
       '@types/debug':
         specifier: ^4.1.9
         version: 4.1.9
+      '@types/gif.js':
+        specifier: ^0.2.3
+        version: 0.2.3
       autoprefixer:
         specifier: ^10.4.16
         version: 10.4.16(postcss@8.4.31)
@@ -170,11 +176,11 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1
       baha-anime-dl:
-        specifier: ^0.0.3
-        version: 0.0.3
+        specifier: ^0.0.4
+        version: 0.0.4
       baha-anime-dl-ext:
-        specifier: ^0.0.3
-        version: 0.0.3(baha-anime-dl@0.0.3)
+        specifier: ^0.0.4
+        version: 0.0.4(baha-anime-dl@0.0.4)
       bahamut-anime:
         specifier: ^1.2.0
         version: 1.2.0
@@ -1319,6 +1325,10 @@ packages:
     resolution: {integrity: sha512-lB98tui0uxc7erbj0serZfJlHKLNJHwBltPnbmO1WRpL5T325GOHRiQfr2E29V2q+S1brDO63Fpdt6vb3bES9Q==}
     dev: true
 
+  /@types/gif.js@0.2.3:
+    resolution: {integrity: sha512-sen/ntlno15/4MO6lhnIGYMZ67hXr7ZYu9DzU3jgWCCTUOCjS8sZeujGAxQ9P/I+gCKAZiKZFVFqj3PQk/0apA==}
+    dev: true
+
   /@types/graceful-fs@4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
     dependencies:
@@ -1766,12 +1776,12 @@ packages:
       ora: 6.1.2
     dev: false
 
-  /baha-anime-dl-ext@0.0.3(baha-anime-dl@0.0.3):
-    resolution: {integrity: sha512-RqHXgpVaqksosGIGyHdtUg28PMGL1qo8v23hHqirilXzwQmxnFlnzwR+Fd7wuNpBgy/W7mXLp2xFERkiX0GT8Q==}
+  /baha-anime-dl-ext@0.0.4(baha-anime-dl@0.0.4):
+    resolution: {integrity: sha512-xeFpsGXgOiN53aDjS2t/lNje3SCdIfwVVhF+FecMOd0Wl/5kxBx+nUsA456QuoRm9gLtIuRAH80LAsdu9JxMZg==}
     peerDependencies:
-      baha-anime-dl: 0.0.3
+      baha-anime-dl: 0.0.4
     dependencies:
-      baha-anime-dl: 0.0.3
+      baha-anime-dl: 0.0.4
       cross-fetch: 4.0.0
       debug: 4.3.4
       fetch-cookie: 2.1.0
@@ -1782,8 +1792,8 @@ packages:
       - supports-color
     dev: false
 
-  /baha-anime-dl@0.0.3:
-    resolution: {integrity: sha512-axxetmfbuU2Bm6UW3bX9BGXfE9bv2IjD6ByyG00apltlCPxVVs/8LKlCu3vKPPAyqnQwBQt1XnajuxAMB/NrOg==}
+  /baha-anime-dl@0.0.4:
+    resolution: {integrity: sha512-kvE4274XawrpBINiNylud2d+DkW0sNsSTE4t0SapaGwH1mta8/tNXDl/Pax1UPupF5caL7dmAR5+LZujHYg8YQ==}
     dependencies:
       cross-fetch: 4.0.0
       debug: 4.3.4
@@ -2810,6 +2820,10 @@ packages:
     dependencies:
       resolve-pkg-maps: 1.0.0
     dev: true
+
+  /gif.js@0.2.0:
+    resolution: {integrity: sha512-bYxCoT8OZKmbxY8RN4qDiYuj4nrQDTzgLRcFVovyona1PTWNePzI4nzOmotnlOFIzTk/ZxAHtv+TfVLiBWj/hw==}
+    dev: false
 
   /glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
