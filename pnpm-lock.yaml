@@ -111,9 +111,6 @@ importers:
       debug:
         specifier: ^4.3.4
         version: 4.3.4
-      gif.js:
-        specifier: ^0.2.0
-        version: 0.2.0
       wait-elm:
         specifier: ^0.1.0
         version: 0.1.0
@@ -136,9 +133,6 @@ importers:
       '@types/debug':
         specifier: ^4.1.9
         version: 4.1.9
-      '@types/gif.js':
-        specifier: ^0.2.3
-        version: 0.2.3
       autoprefixer:
         specifier: ^10.4.16
         version: 10.4.16(postcss@8.4.31)
@@ -1323,10 +1317,6 @@ packages:
 
   /@types/filewriter@0.0.30:
     resolution: {integrity: sha512-lB98tui0uxc7erbj0serZfJlHKLNJHwBltPnbmO1WRpL5T325GOHRiQfr2E29V2q+S1brDO63Fpdt6vb3bES9Q==}
-    dev: true
-
-  /@types/gif.js@0.2.3:
-    resolution: {integrity: sha512-sen/ntlno15/4MO6lhnIGYMZ67hXr7ZYu9DzU3jgWCCTUOCjS8sZeujGAxQ9P/I+gCKAZiKZFVFqj3PQk/0apA==}
     dev: true
 
   /@types/graceful-fs@4.1.5:
@@ -2820,10 +2810,6 @@ packages:
     dependencies:
       resolve-pkg-maps: 1.0.0
     dev: true
-
-  /gif.js@0.2.0:
-    resolution: {integrity: sha512-bYxCoT8OZKmbxY8RN4qDiYuj4nrQDTzgLRcFVovyona1PTWNePzI4nzOmotnlOFIzTk/ZxAHtv+TfVLiBWj/hw==}
-    dev: false
 
   /glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
