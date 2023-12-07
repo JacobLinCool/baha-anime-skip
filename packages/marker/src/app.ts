@@ -11,7 +11,7 @@ const defaults = {
     lower: 84,
     upper: 92,
     range: "0,360",
-    concurrency: os.cpus().length,
+    concurrency: Number(process.env.MARKER_CONCURRENCY) || os.cpus().length,
     keep: false,
     name: "OP",
     last: false,
