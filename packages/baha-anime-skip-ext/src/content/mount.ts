@@ -1,8 +1,8 @@
-import SkipTab from "../components/SkipTab.svelte";
+import { wait } from "wait-elm";
 import SkipButton from "../components/SkipButton.svelte";
+import SkipTab from "../components/SkipTab.svelte";
 import { log as base_log } from "../log";
 import { storage } from "../storage";
-import { wait } from "wait-elm";
 
 const log = base_log.extend("mount");
 log.enabled = true;
@@ -43,7 +43,9 @@ export async function mount(target: HTMLDivElement): Promise<void> {
 
                                 const data = Object.entries(raw).map(
                                     ([chapter, [start, duration]]) => ({
-                                        chapter, start, end: start + duration
+                                        chapter,
+                                        start,
+                                        end: start + duration,
                                     }),
                                 );
 
@@ -67,7 +69,10 @@ export async function mount(target: HTMLDivElement): Promise<void> {
     }
 }
 
-async function fetch_data(sn: string, endpoints: string[]): Promise<Record<string, [number, number]>> {
+async function fetch_data(
+    sn: string,
+    endpoints: string[],
+): Promise<Record<string, [number, number]>> {
     log("fetching data", { sn, endpoints });
     for (const endpoint of endpoints) {
         try {

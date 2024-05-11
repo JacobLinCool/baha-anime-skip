@@ -15,7 +15,7 @@ export function create_report_url(): string {
             "",
             `# 補充資料`,
             `<!-- 如有補充資料，請補充於此行之下 -->`,
-            ""
+            "",
         ].join("\n");
         url.searchParams.set("body", body);
     }

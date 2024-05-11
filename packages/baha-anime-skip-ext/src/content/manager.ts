@@ -28,7 +28,7 @@ export class TabManager {
             log("attaching other tabs", { link, name, id, target });
             if (name && target) {
                 this.tabs.push({
-                    data: { name, mount: () => { }, unmount: () => { } },
+                    data: { name, mount: () => {}, unmount: () => {} },
                     target,
                     nav: tab as HTMLDivElement,
                 });
