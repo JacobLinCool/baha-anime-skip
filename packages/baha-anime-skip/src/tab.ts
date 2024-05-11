@@ -34,9 +34,9 @@ export async function add_tab(): Promise<void> {
         e.preventDefault();
     });
 
-    const issue_title = `[資料錯誤或遺失] ${document.title.match(
-        /(.+?\[.+?\])/,
-    )?.[1]} (${new URLSearchParams(location.search).get("sn")})`;
+    const issue_title = `[資料錯誤或遺失] ${
+        document.title.match(/(.+?\[.+?\])/)?.[1]
+    } (${new URLSearchParams(location.search).get("sn")})`;
     const issue_body = `[動畫瘋連結](${location.href})\n\n# 問題描述\n<!-- 請將問題描述寫在此行之下 -->\n\n# 補充資料\n<!-- 如有補充資料，請補充於此行之下 -->\n`;
 
     const endpoints = config.get("endpoints") as string[];

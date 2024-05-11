@@ -1,6 +1,6 @@
 import { log } from "../log";
-import { TabManager } from "./manager";
 import "../styles.css";
+import { TabManager } from "./manager";
 import { mount } from "./mount";
 
 if (TabManager.attachable()) {
@@ -16,7 +16,7 @@ function attach() {
     manager.add({
         name: "Skip",
         mount,
-        unmount: () => { },
+        unmount: () => {},
     });
     log("attached");
 }
